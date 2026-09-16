@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="840" viewBox="0 0 160 420" fill="none">
+  <defs>
+    <linearGradient id="coat" x1="42" y1="128" x2="119" y2="301" gradientUnits="userSpaceOnUse"><stop stop-color="#F4DCE4"/><stop offset="1" stop-color="#C78CA7"/></linearGradient>
+    <linearGradient id="hair" x1="55" y1="36" x2="110" y2="126" gradientUnits="userSpaceOnUse"><stop stop-color="#72535E"/><stop offset="1" stop-color="#493541"/></linearGradient>
+    <linearGradient id="trousers" x1="69" y1="268" x2="101" y2="382" gradientUnits="userSpaceOnUse"><stop stop-color="#8B7381"/><stop offset="1" stop-color="#584451"/></linearGradient>
+  </defs>
+  <!-- An illustrated figure seen from behind, pausing with a hand near her face. -->
+  <path d="M58 265C57 295 63 323 62 349L59 385 76 387 83 344 86 285Z" fill="url(#trousers)"/>
+  <path d="M84 279 89 332 92 383 108 384 110 330 106 267Z" fill="url(#trousers)"/>
+  <path d="M59 380C56 386 48 391 48 397 50 402 67 401 77 398L77 382Z" fill="#493743"/>
+  <path d="M92 380 92 397C101 402 119 402 120 397 120 392 111 389 108 381Z" fill="#493743"/>
+  <path d="M70 102 68 125 93 136 102 117 98 91Z" fill="#E7BEAE"/>
+  <path d="M57 47C59 23 91 20 107 39 118 50 113 66 115 74L121 83 114 88C113 105 106 112 95 109L71 97Z" fill="#F2D3C0"/>
+  <path d="M48 126C58 114 69 112 79 120 89 124 99 114 109 124 125 140 115 169 108 194 101 218 115 249 122 275 105 289 63 292 38 279 48 247 56 220 51 195 46 171 37 143 48 126Z" fill="url(#coat)"/>
+  <path d="M48 131C37 137 36 161 34 183L28 235C28 241 36 245 43 240L54 185 59 148Z" fill="#E6BCCF"/>
+  <path d="M28 233 27 249C28 258 33 264 37 261L40 247 42 237Z" fill="#F2D3C0"/>
+  <path d="M106 127C118 124 126 139 133 151 138 161 132 171 121 169L104 152Z" fill="#E6BCCF"/>
+  <path d="M126 155 113 119 102 123 112 163C116 174 133 173 134 162Z" fill="#F0CDDC"/>
+  <path d="M113 120 110 109C109 103 105 95 102 95 99 95 101 104 101 107L96 110 101 125Z" fill="#F2D3C0"/>
+  <path d="M52 43C59 24 82 19 101 29 113 37 116 48 111 58 104 52 103 44 94 43 92 65 87 73 90 91 92 104 104 113 109 125 88 130 76 112 69 105 72 120 64 128 52 128 58 116 52 106 48 93 43 78 45 57 52 43Z" fill="url(#hair)"/>
+  <path d="M62 42C53 66 58 86 64 99M76 36C67 60 69 81 77 94M93 35C89 46 90 55 87 64" stroke="#B78B96" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
+  <path d="M77 133 74 204 73 276M54 214C67 219 91 219 104 213M48 270C64 276 99 278 113 271" stroke="#AD738E" stroke-opacity=".45" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M51 145 43 190M103 186 101 199" stroke="#FFF1F5" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="840" viewBox="0 0 160 420" fill="none">
+  <defs>
+    <linearGradient id="jacket" x1="47" y1="119" x2="110" y2="259" gradientUnits="userSpaceOnUse"><stop stop-color="#EADBCB"/><stop offset="1" stop-color="#BFA48F"/></linearGradient>
+    <linearGradient id="trousers" x1="67" y1="249" x2="98" y2="385" gradientUnits="userSpaceOnUse"><stop stop-color="#6B707D"/><stop offset="1" stop-color="#424252"/></linearGradient>
+    <linearGradient id="hair" x1="57" y1="29" x2="110" y2="79" gradientUnits="userSpaceOnUse"><stop stop-color="#73555C"/><stop offset="1" stop-color="#473440"/></linearGradient>
+  </defs>
+  <path d="M56 244 58 304 59 347 55 384 73 386 82 345 85 259Z" fill="url(#trousers)"/>
+  <path d="M82 253 90 326 93 383 110 384 111 321 108 244Z" fill="url(#trousers)"/>
+  <path d="M55 379C51 386 43 390 43 396 45 402 64 401 74 398L74 381Z" fill="#39313E"/>
+  <path d="M93 380 93 396C103 402 122 402 123 397 123 392 113 388 110 380Z" fill="#39313E"/>
+  <path d="M71 91 68 117 88 137 104 116 98 91Z" fill="#DEB19E"/>
+  <path d="M57 48C59 27 91 24 105 39 115 49 111 64 113 71L120 81 113 86C114 101 106 109 96 106L70 94Z" fill="#F0CFB9"/>
+  <path d="M60 114 76 109 92 119 104 110 114 125 111 246 54 249 47 126Z" fill="#81959A"/>
+  <path d="M47 120 66 112 78 131 75 195 77 257C65 261 49 259 41 253L47 204 43 166Z" fill="url(#jacket)"/>
+  <path d="M104 114 92 128 92 197 91 257 115 252 110 201 119 150 117 126Z" fill="url(#jacket)"/>
+  <path d="M48 123C37 125 34 147 32 171L27 230C28 237 36 240 43 234L53 178 60 143Z" fill="#DAC6B4"/>
+  <path d="M27 230 27 246C29 254 34 258 38 254L41 242 42 233Z" fill="#F0CFB9"/>
+  <path d="M110 124C120 122 126 140 128 157L133 211 124 220 113 181 105 150Z" fill="#D2BBA7"/>
+  <path d="M124 210 125 227C127 235 132 238 136 234L137 221 133 212Z" fill="#F0CFB9"/>
+  <path d="M52 45C47 29 66 21 80 24 90 17 112 27 116 42L109 60 103 57 98 42C89 51 77 49 69 47L65 75 56 78C48 67 48 55 52 45Z" fill="url(#hair)"/>
+  <path d="M60 37C71 29 86 35 93 32M72 40 95 36" stroke="#B28A93" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
+  <path d="M63 116 71 137 62 154M105 117 97 136 106 151M48 235 67 237M98 235 109 232" stroke="#9F8375" stroke-opacity=".6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M45 149 37 200M60 272 65 333M97 273 103 339" stroke="#EEE4DE" stroke-opacity=".2" stroke-width="2" stroke-linecap="round"/>
+</svg>
