@@ -4,6 +4,8 @@ import { Journey } from './utils/journey.js';
 import { Sound } from './utils/audio.js';
 import { World } from './scene/world.js';
 import { Reader, readingPages } from './utils/reading.js';
+import { FlowerWish } from './utils/flower-wish.js';
+import { loadFonts } from './utils/fonts.js';
 
 const icons = {
   heart: '<svg viewBox="0 0 32 40" fill="none" aria-hidden="true"><path d="M16 34C12 30 3 23 3 15a7 7 0 0 1 13-4 7 7 0 0 1 13 4c0 8-9 15-13 19Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -38,6 +40,7 @@ document.querySelector('#app').innerHTML = `
     <main class="main" id="main" tabindex="0" aria-label="${escape(CONTENT.ui.tapHint)}">
       <div class="sr-only" id="gift-celebration" role="status" hidden></div>
       <div class="visual-caption"><span class="caption-line" aria-hidden="true"></span><p id="caption" aria-hidden="true"></p><div id="keepsakes" class="keepsake-indicator" aria-hidden="true"></div></div>
+      <div class="visual-messages" id="visual-messages" hidden></div>
       <article class="story" id="story" aria-labelledby="scene-title">
         <div class="dedication" id="dedication"></div>
         <h1 id="scene-title" tabindex="-1"></h1>
@@ -55,10 +58,12 @@ document.querySelector('#app').innerHTML = `
       <div class="footer-note"><span>${escape(CONTENT.ui.footer)}</span><span>${icons.heart}</span><span>${escape(CONTENT.ui.duration)}</span></div>
     </footer>
   </div>
+  <div class="flower-wish" id="flower-wish" hidden aria-hidden="true"><canvas></canvas><p></p></div>
   <section class="fallback" id="fallback" hidden aria-label="${escape(CONTENT.ui.closingLabel)}"></section>
   <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
 `;
 const $ = (selector) => document.querySelector(selector);
+const flowerWish = new FlowerWish($('#flower-wish'));
 
 function updateSound() {
   $('#experience').dataset.sound = !sound.available ? 'unavailable' : sound.on ? 'playing' : 'off';
@@ -67,6 +72,14 @@ function updateSound() {
 function render({ focus = false } = {}) {
   const scene = journey.scene; const intro = journey.index === 0; const closing = scene.id === 'closing'; const gift = scene.id === 'gift';
   const mobile = mobileMedia.matches;
+  const rightMessages = scene.id === 'distance' && !mobile;
+  const discoveries = $('#discoveries');
+  const discoveryHome = rightMessages ? $('#visual-messages') : $('#story');
+  if (discoveries.parentElement !== discoveryHome) {
+    if (rightMessages) discoveryHome.append(discoveries);
+    else discoveryHome.insertBefore(discoveries, $('#handoff'));
+  }
+  $('#visual-messages').hidden = !rightMessages;
   $('#experience').dataset.scene = scene.id;
   document.body.dataset.scene = scene.id;
   $('#dedication').textContent = text(CONTENT.ui.dedication); $('#dedication').hidden = !intro;
@@ -87,6 +100,7 @@ function render({ focus = false } = {}) {
   const page = reader.select(key, readingPages(copy));
   $('#copy').innerHTML = paragraphs(mobile ? [page] : copy);
   $('#copy').hidden = mobile && scene.id === 'distance' && journey.discoveries.size > 0;
+  $('#copy').classList.toggle('sr-only', mobile && scene.id === 'garden' && revealedIndex !== undefined);
   const readingFrame = `${key}:${reader.index}`;
   if (mobile && !motion.matches && lastReadingFrame !== readingFrame) $('#copy').animate([{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 350, easing: 'ease-out' });
   lastReadingFrame = readingFrame;
@@ -97,6 +111,8 @@ function render({ focus = false } = {}) {
     return `<div class="discovery${discovered ? ' is-discovered' : ''}"${discovered ? '' : ' hidden'}><span class="discovery-marker" data-discovery="${i}" aria-hidden="true">${icon}</span>${discovered && (!mobile || scene.id === 'distance') ? `<p${i === revealedIndex ? ' class="reveal-message"' : ''}>${escape(message)}</p>` : ''}</div>`;
   }).join('');
   $('#discoveries').classList.toggle('has-reveals', journey.discoveries.size > 0);
+  $('#discoveries').hidden = mobile && scene.id === 'meeting';
+  $('#discoveries').classList.toggle('sr-only', scene.id === 'garden');
   $('#handoff').textContent = gift && journey.gift === 'handoff' ? text(scene.handoff) : closing && journey.kept ? text(CONTENT.ui.saved) : '';
   $('#handoff').hidden = !$('#handoff').textContent || (mobile && gift);
   $('#signature').textContent = closing ? text(CONTENT.finalSignature) : ''; $('#signature').hidden = !closing || (mobile && reader.more);
@@ -104,6 +120,7 @@ function render({ focus = false } = {}) {
   if (gift && journey.gift === 'closed') buttonLabel = CONTENT.ui.openGift;
   if (gift && ['opening', 'revealed'].includes(journey.gift)) buttonLabel = CONTENT.ui.giftOpening;
   if (closing) buttonLabel = journey.kept ? CONTENT.ui.replay : saving ? CONTENT.ui.saving : CONTENT.ui.save;
+  if (scene.id === 'meeting' && journey.busy) buttonLabel = CONTENT.ui.meetingProgress;
   if (mobile && !journey.busy && !saving) buttonLabel = reader.more ? CONTENT.ui.tapContinue : intro ? CONTENT.ui.tapStart : gift && journey.gift === 'closed' ? CONTENT.ui.tapGift : !journey.unlocked ? CONTENT.ui.tapExplore : buttonLabel;
   $('#experience').setAttribute('aria-busy', String(journey.busy || saving));
   $('#experience').dataset.action = text(buttonLabel);
@@ -113,6 +130,7 @@ function render({ focus = false } = {}) {
   if (mobile) $('#hint').textContent = text(!reader.more && needsInteraction ? CONTENT.ui.tapExplore : CONTENT.ui.tapHint);
   if (!mobile) $('#hint').textContent = text(intro ? CONTENT.ui.tapStart : needsInteraction ? CONTENT.ui.tapExplore : CONTENT.ui.tapHint);
   if (closing || gift) $('#hint').textContent = text(buttonLabel);
+  if (scene.id === 'meeting' && journey.busy) $('#hint').textContent = text(CONTENT.ui.meetingProgress);
   $('#caption').innerHTML = `${escape(scene.caption)}<br><em>${escape(scene.captionItalic)}</em>`;
   $('#gift-celebration').textContent = gift ? text(scene.celebration) : '';
   $('#gift-celebration').hidden = !gift || ['closed', 'opening'].includes(journey.gift);
@@ -122,6 +140,9 @@ function render({ focus = false } = {}) {
   updateSound();
   if (focus) { $('#scene-title').focus({ preventScroll: true }); $('#story').scrollTop = 0; $('#main').scrollTop = 0; window.scrollTo({ top: 0, behavior: 'instant' }); }
   syncDistanceAnchors();
+  if (scene.id === 'garden' && revealedIndex !== undefined && !journey.busy && !fallback) {
+    flowerWish.show(text(scene.interactions[revealedIndex]), () => world?.flowerAnchor(revealedIndex), motion.matches);
+  } else flowerWish.hide();
 }
 
 function syncDistanceAnchors() {
@@ -134,6 +155,7 @@ function syncDistanceAnchors() {
 
 function showFallback() {
   if (fallback) return; fallback = true; journey.busy = false;
+  flowerWish.hide();
   $('#world').hidden = true; $('#experience').hidden = true; $('#loading').hidden = true;
   const section = $('#fallback'); section.hidden = false;
   section.innerHTML = `<div class="fallback-brand">${icons.heart}${escape(CONTENT.brand)}</div><p class="fallback-notice">${escape(CONTENT.ui.fallback)}</p>${CONTENT.scenes.map((scene, index) => `<article><h2>${escape(index === 0 ? CONTENT.openingTitle : index === 6 ? CONTENT.finalTitle : scene.title)}</h2>${paragraphs(index === 6 ? CONTENT.finalMessage.split('\n\n') : scene.paragraphs)}${paragraphs(scene.interactions || [])}${scene.celebration ? `<h3>${escape(scene.celebration)}</h3>` : ''}${paragraphs(scene.revealedParagraphs || [])}${scene.handoff ? `<p class="handoff">${escape(scene.handoff)}</p>` : ''}</article>`).join('')}<p class="signature">${escape(CONTENT.finalSignature)}</p><a href="#app" id="fallback-replay">${escape(CONTENT.ui.replay)}</a>`;
@@ -190,7 +212,11 @@ journey.addEventListener('navigate', ({ detail }) => {
   if (!world) { journey.busy = false; render(); }
 });
 journey.addEventListener('update', () => render());
-journey.addEventListener('discover', ({ detail }) => { reader.reveals.set(journey.index, detail.index); world?.discover(detail.index); $('#announcement').textContent = text(journey.scene.interactions[detail.index]); });
+journey.addEventListener('discover', ({ detail }) => {
+  // The automatic encounter keeps the mobile introduction in its reading order.
+  if (journey.scene.id !== 'meeting') reader.reveals.set(journey.index, detail.index);
+  world?.discover(detail.index); $('#announcement').textContent = text(journey.scene.interactions[detail.index]);
+});
 $('.brand').addEventListener('click', (event) => { event.preventDefault(); if (!journey.busy && !saving) restart(); });
 function onKey(event) {
   if (fallback || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.altKey || event.ctrlKey || event.metaKey) return;
@@ -224,15 +250,17 @@ window.addEventListener('resize', syncDistanceAnchors);
 document.addEventListener('scroll', syncDistanceAnchors, { passive: true, capture: true });
 function onVisibility() { if (document.hidden) sound.suspend(); else sound.resume(); }
 document.addEventListener('visibilitychange', onVisibility);
-function onMotion() { if (world) { world.reduced = motion.matches; if (motion.matches) world.limitGiftHearts(CONTENT.giftHearts.reducedCount); world.lastFrame = 0; } }
+function onMotion() { if (world) { world.reduced = motion.matches; if (motion.matches) world.limitGiftHearts(CONTENT.giftHearts.reducedCount); world.lastFrame = 0; } render(); }
 motion.addEventListener('change', onMotion);
 window.addEventListener('pagehide', (event) => {
   if (event.persisted) return;
-  world?.dispose(); sound.dispose(); generation++; timers.forEach(clearTimeout);
+  world?.dispose(); sound.dispose(); flowerWish.dispose(); generation++; timers.forEach(clearTimeout);
   window.removeEventListener('resize', syncDistanceAnchors); document.removeEventListener('scroll', syncDistanceAnchors, true);
   document.removeEventListener('keydown', onKey); document.removeEventListener('click', onTap); mobileMedia.removeEventListener('change', onMobileChange); document.removeEventListener('touchstart', onTouchStart); document.removeEventListener('touchend', onTouchEnd); document.removeEventListener('visibilitychange', onVisibility); motion.removeEventListener('change', onMotion);
 }, { once: true });
 
-render();
+journey.busy = true; render();
+await loadFonts();
+journey.busy = false; render();
 try { world = new World($('#world'), journey, motion.matches, showFallback); } catch { showFallback(); }
 requestAnimationFrame(() => { $('#loading').classList.add('loaded'); schedule(() => { $('#loading').hidden = true; }, motion.matches ? 0 : 600); });

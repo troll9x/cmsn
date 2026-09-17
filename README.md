@@ -30,14 +30,22 @@ Thư mục **`dist/`** chứa website hoàn chỉnh. Đưa toàn bộ nội dung
 
 ## Cá nhân hóa
 
-**Mọi tên, lời dẫn, lời chúc, nhãn giao diện, màu sắc và thời gian nằm trong `src/content.js`.** Chỉ sửa file này để chuẩn bị bản dành riêng cho người nhận.
+**Điền thông tin cá nhân trong `personal.config.js` ở thư mục gốc**, cùng cấp với `package.json`. Website tự lấy tên, ngày sinh nhật, cách xưng hô và chữ ký từ file này.
 
 ```js
-recipientName: 'Chi',
-senderName: 'Sơn',
-senderPronoun: 'anh',
-recipientPronoun: 'em',
+export const PROFILE = {
+  recipientName: 'Chi',
+  senderName: 'Sơn',
+  senderPronoun: 'anh',
+  recipientPronoun: 'em',
+  birthday: '24/07',
+  signature: '— Từ {senderName}',
+};
 ```
+
+`birthday` là chuỗi ngày/tháng; để `''` nếu muốn bỏ ngày khỏi lời mở đầu. `signature` có thể là một câu ký tên riêng. Đây là file cấu hình bằng JavaScript, không cần `.env` hay một form nhập trên website. **Sau khi sửa thông tin, chạy `npm run build` và cập nhật nội dung `dist/` trên hosting.** Nếu build trực tiếp trên VPS, Nginx cần trỏ vào thư mục `dist/`.
+
+**Sửa lời dẫn, lời chúc, giao diện, màu sắc và thời gian trong `src/content.js`.** Không cần tìm và thay tên trong từng câu.
 
 Các token được thay tự động trong nội dung:
 
@@ -45,12 +53,13 @@ Các token được thay tự động trong nội dung:
 | --- | --- |
 | `{recipientName}` | Tên người nhận |
 | `{senderName}` | Tên người gửi |
+| `{birthday}` | Ngày sinh nhật |
 | `{sender}` / `{recipient}` | Đại từ xưng hô |
 | `{senderCapital}` / `{recipientCapital}` | Đại từ có chữ đầu viết hoa |
 
 Đổi `openingTitle` để thay tiêu đề mở đầu. `openingLines` là cách xuống dòng nghệ thuật cho tiêu đề mặc định; khi thay `openingTitle`, tiêu đề mới tự hiển thị. Đổi `scenes[n].title`, `mobileTitle`, `paragraphs`, `interactions`, `caption` và `captionItalic` để sửa từng cảnh. `mobileTitle` là tiêu đề ngắn dành cho màn hình điện thoại; các đoạn nội dung tự chia thành lượt đọc, giữ nguyên mọi từ. Cảnh món quà có thêm `revealedParagraphs` và `handoff`.
 
-Đổi **`CONTENT.finalMessage`** để thay toàn bộ lời nhắn cuối; dùng `\n` để xuống dòng, `\n\n` để ngăn đoạn. `finalTitle` là tiêu đề HTML cuối, `finalSignature` là chữ ký. Tên trong chữ bằng hạt sáng tự lấy từ `recipientName`. Nội dung được escape trước khi đưa vào HTML, nên tên chứa dấu nháy hoặc ký tự đặc biệt vẫn an toàn.
+Đổi **`CONTENT.finalMessage`** để thay toàn bộ lời nhắn cuối; dùng `\n` để xuống dòng, `\n\n` để ngăn đoạn. `finalTitle` là tiêu đề HTML cuối; chữ ký lấy từ `PROFILE.signature` trong `personal.config.js`. Tên trong chữ bằng hạt sáng tự lấy từ `recipientName`. Nội dung được escape trước khi đưa vào HTML, nên tên chứa dấu nháy hoặc ký tự đặc biệt vẫn an toàn.
 
 Hãy giữ lời nhắn chân thành, không tạo cảm giác người nhận phải dành thời gian hoặc đáp lại tình cảm vì món quà.
 
@@ -70,7 +79,11 @@ Sửa `CONTENT.colors` để thay nền đêm, hồng pha lê, hồng nhạt, ng
 
 Sửa `CONTENT.garden` để đổi màu hoa hồng, hoa màu kem, lớp cánh ở tâm, lá và thân. Mỗi bông gồm 31 cánh mỏng, cong, xếp thành năm lớp; khi chạm, các lớp cánh mở dần. Thân cong và lá xanh đi cùng bông hoa; khu vườn có hoa nhỏ phía sau và sương nhẹ.
 
-Dòng `scenes[5].celebration` được dựng bên trong trái tim lớn ở cảnh mở quà. Có thể đổi thành `CHÚC MỪNG SINH NHẬT` hoặc `Happy Birthday`; chữ tự chia dòng và thu gọn, cùng đổi vị trí và tỉ lệ với trái tim trên điện thoại. Chữ chỉ hiện sau khi các hạt đã tụ lại; trình đọc màn hình cũng nhận được lời chúc này.
+Dòng `scenes[5].celebration` được dựng bên trong trái tim lớn ở cảnh mở quà. Có thể đổi thành `CHÚC MỪNG SINH NHẬT` hoặc `Happy Birthday`; lời chúc hiện bằng chữ serif thanh và dòng viết nghiêng, kèm tên người nhận và ngày sinh nhật từ `personal.config.js`. Nội dung khác vẫn tự chia dòng và thu gọn. Chữ cùng đổi vị trí và tỉ lệ với trái tim trên điện thoại, chỉ hiện sau khi các hạt đã tụ lại; trình đọc màn hình cũng nhận được lời chúc này.
+
+Website dùng **Lora** (thường và nghiêng) cho tiêu đề, chú thích, lời chúc và chữ trong hiệu ứng; **Be Vietnam Pro** (400/500) cho nội dung và giao diện. Hai bộ font có hỗ trợ tiếng Việt, được lưu tại `public/fonts/` bằng WOFF, giữ toàn bộ ký tự và bảng định vị dấu. Không gọi dịch vụ font ngoài khi xem website. Nguồn và giấy phép: [Lora](https://github.com/google/fonts/tree/main/ofl/lora), [Be Vietnam Pro](https://github.com/google/fonts/tree/main/ofl/bevietnampro); các file `OFL-lora.txt` và `OFL-bevietnampro.txt` được kèm trong thư mục font.
+
+`src/utils/fonts.js` nạp đủ font trước khi dựng chữ bằng canvas, để hạt chữ và lời chúc trong trái tim dùng đúng font. Nội dung được chuẩn hóa Unicode NFC để dấu tiếng Việt không bị tách khi tên hoặc lời chúc được dán từ nguồn khác.
 
 `CONTENT.timing` có các giá trị tính bằng mili giây:
 
@@ -93,15 +106,15 @@ Trên điện thoại, trái tim đã chạm bay xuống vị trí lời nhắn 
 ## Các cảnh và điều khiển
 
 1. **Lời mời**: trái tim pha lê 3D với viền bo mềm xuất hiện, mở hành trình.
-2. **Cuộc gặp gỡ**: chàng trai và cô gái minh họa 2D đứng ở hai nhánh khác nhau. Chạm màn hình để hai người tiến về cùng giao điểm; sau khi gặp nhau, trái tim hồng hiện lên phía trên. Cảnh giữ khoảng 3,3 giây cho cuộc gặp hoàn tất, rồi chạm tiếp để tiến tới cảnh sau. Chế độ giảm chuyển động hiện cuộc gặp và trái tim ngay lập tức.
-3. **Một khoảng cách**: thu thập ba trái tim pha lê; chúng tiếp tục đi cùng ở những cảnh sau. Các trái tim nghiêng nhẹ để luôn nhận ra hình dáng; biểu tượng giao diện và favicon cũng dùng trái tim.
-4. **Khu vườn**: chạm ba bông hoa để mở ba lời chúc.
+2. **Định mệnh**: chàng trai và cô gái minh họa 2D đứng ở hai nhánh khác nhau. Ngay khi camera đến cảnh này, hai người tự tiến về cùng giao điểm; sau khi gặp nhau, trái tim hồng hiện lên phía trên. Cảnh giữ khoảng 3,3 giây cho cuộc gặp hoàn tất, rồi chạm để đọc tiếp hoặc tiến tới cảnh sau. Trên điện thoại, lời dẫn vẫn giữ thứ tự đọc. Chế độ giảm chuyển động hiện cuộc gặp và trái tim ngay lập tức. Xem lại hành trình sẽ chạy lại cuộc gặp tự động.
+3. **Những niềm vui nhỏ**: thu thập ba trái tim pha lê; chúng tiếp tục đi cùng ở những cảnh sau. Các trái tim nghiêng nhẹ để luôn nhận ra hình dáng; biểu tượng giao diện và favicon cũng dùng trái tim.
+4. **Khu vườn**: chạm bông hoa để nở hoa và mở lời chúc ngay phía trên. Các hạt nhỏ bay từ hoa, tụ theo hình dáng từng chữ và dấu tiếng Việt, rồi chuyển thành chữ rõ nét. Chạm bông tiếp theo sẽ làm câu cũ blur và mờ dần trong 0,52 giây, trước khi các hạt tạo câu mới. Mỗi lần chỉ hiện một lời chúc. Chế độ giảm chuyển động hiển thị chữ ngay; quay lại giữ lời chúc đã mở.
 
 5. **Thời gian**: pha lê xoay, tụ về mặt đồng hồ và cổng ánh sáng.
 6. **Món quà**: tháo nơ, mở hộp bo mềm, vô số trái tim nhỏ bay ra rồi tụ thành trái tim lớn. Sau đó hiện **CHÚC MỪNG SINH NHẬT**, rồi sau khoảng dừng hiển thị lời mời nhìn món quà bên cạnh. **Đây là lúc người gửi trao Apple Watch thật.** Dòng chữ chỉnh tại `scenes[5].celebration` trong `src/content.js`. Hiệu ứng dùng 60.000 hạt trên desktop, 8.000 trên điện thoại và 1.200 khi giảm chuyển động; có thể chỉnh `CONTENT.giftHearts`. GPU xử lý chuyển động trong một draw call, viền trái tim được làm mềm; số hạt tự giảm khi thiết bị chậm.
 7. **Lời chúc cuối**: hạt sáng kết chữ; chạm sau khi đọc hết lời nhắn để tạo trái tim pha lê rồi tan thành hạt sáng. Khi hiện lời nhắc xem lại, chạm tiếp để bắt đầu hành trình mới.
 
-Ở cảnh **Một khoảng cách**, mỗi lần chạm màn hình sẽ đưa một trái tim bay sang trái, dừng cạnh câu tương ứng. Ba câu hiện lần lượt và giữ lại trên cả desktop lẫn điện thoại; lần chạm kế tiếp sau khi mở đủ ba câu sẽ sang khu vườn. Chế độ giảm chuyển động đặt trái tim cạnh chữ ngay lập tức.
+Ở cảnh **Những niềm vui nhỏ**, mỗi lần chạm màn hình sẽ đưa một trái tim thu về cạnh câu tương ứng. Trên desktop, ba trái tim và câu chữ nằm ở vùng bên phải, cùng phía với hình ảnh; phần lời dẫn ở bên trái. Trên điện thoại, trái tim vẫn bay xuống cạnh lời nhắn. Ba câu hiện lần lượt và giữ lại; lần chạm kế tiếp sau khi mở đủ ba câu sẽ sang khu vườn. Chế độ giảm chuyển động đặt trái tim cạnh chữ ngay lập tức.
 
 **Chạm vào vùng trống hoặc lời nhắn** để tiếp tục. Giao diện không có button. Trên điện thoại, mỗi chạm đọc đoạn kế tiếp, mở từng trái tim/hoa rồi sang cảnh mới. Header, thanh tiến trình và thao tác chọn chữ không kích hoạt đi tiếp.
 
@@ -113,8 +126,9 @@ Có thể chạm trực tiếp vật thể 3D hoặc vùng trống để mở v�
 
 ```text
 index.html                 Điểm vào HTML
+personal.config.js         Tên, ngày sinh nhật, cách xưng hô và chữ ký
 src/
-  content.js               Toàn bộ nội dung và cấu hình cá nhân
+  content.js               Lời dẫn, lời chúc, giao diện và cấu hình hiệu ứng
   main.js                  Giao diện, điều khiển, fallback và vòng đời
   styles.css               Bố cục responsive và giao diện
   scene/
@@ -127,10 +141,13 @@ src/
     gift-hearts.js         Đàn trái tim bằng GPU và hình trái tim lớn
     heart-message.js       Chữ sinh nhật nằm trong trái tim 3D
   utils/
+    fonts.js               Nạp font tiếng Việt cho giao diện và chữ canvas
+    flower-wish.js         Hạt tạo chữ phía trên hoa và chuyển câu bằng blur
     journey.js             Trạng thái, điều kiện đi tiếp và xem lại
     reading.js             Chia đoạn đọc, vị trí đọc và lời chúc đang mở
     audio.js               Nhạc tùy chọn và xử lý file thiếu
 public/
+  fonts/                   Font tiếng Việt cục bộ, bản gốc TTF và giấy phép OFL
   images/traveller.svg      Cô gái minh họa 2D
   images/traveller-boy.svg  Chàng trai minh họa 2D
   favicon.svg              Biểu tượng cục bộ

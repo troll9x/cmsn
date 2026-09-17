@@ -25,12 +25,17 @@ try {
   await page.goto('http://127.0.0.1:5178');
   await page.locator('#loading').waitFor({ state: 'hidden' });
   check(await page.locator('#world').isVisible(), 'WebGL khởi tạo');
+  check(await page.evaluate(() => {
+    const faces = [...document.fonts].filter(face => face.family.replaceAll('"', '') === 'Lora' || face.family.replaceAll('"', '') === 'Be Vietnam Pro');
+    return faces.length === 4 && faces.every(face => face.status === 'loaded');
+  }), 'Đủ font tiếng Việt thường, nghiêng và nội dung trước khi dựng hiệu ứng chữ');
   check(await page.locator('button, [role="button"]').count() === 0, 'Giao diện desktop không còn button');
   await noOverflow(page, 'Desktop');
   await page.screenshot({ path: 'test-results/desktop.png', fullPage: true });
   await page.mouse.click(700, 160); await settle(page, 'meeting', false);
-  await page.locator('#main').focus(); await page.keyboard.press('Enter');
-  check((await page.locator('.is-discovered').count()) === 1, 'Bàn phím mở giao điểm');
+  check((await page.locator('.is-discovered').count()) === 1, 'Cuộc gặp tự bắt đầu khi vào cảnh, không cần click');
+  check((await page.locator('#scene-title').textContent()).includes(CONTENT.scenes[1].label), 'Cảnh gặp gỡ mang tên Định mệnh');
+  await page.locator('#main').focus();
   await page.keyboard.press('ArrowRight'); await settle(page, 'distance', false);
   for (let i = 0; i < 3; i++) {
     await page.mouse.click(700, 160);
@@ -43,6 +48,7 @@ try {
   check((await page.locator('#keepsakes svg').count()) === 3, 'Ba pha lê tiếp tục đi cùng qua các cảnh');
   for (let i = 0; i < 3; i++) await page.mouse.click(700, 160);
   check((await page.locator('.is-discovered').count()) === 3, 'Ba bông hoa nở, lời chúc hiển thị đầy đủ');
+  check(await page.locator('#flower-wish').isVisible() && (await page.locator('#flower-wish p').textContent()).replace(/\s+/g, ' ') === text(CONTENT.scenes[3].interactions[2]), 'Giảm chuyển động: lời chúc trên hoa hiển thị ngay');
   await page.screenshot({ path: 'test-results/garden-desktop.png', fullPage: true });
   await page.mouse.click(700, 160); await settle(page, 'time');
   await page.keyboard.press('ArrowLeft'); await settle(page, 'garden');
@@ -67,7 +73,7 @@ try {
   check(await page.locator('#handoff').isVisible(), 'Trái tim tan, hiện nút xem lại');
   await page.mouse.click(700, 160); await settle(page, 'invitation');
   await page.mouse.click(700, 160); await settle(page, 'meeting', false);
-  check((await page.locator('.is-discovered').count()) === 0, 'Xem lại xóa trạng thái của hành trình cũ');
+  check((await page.locator('.is-discovered').count()) === 1, 'Xem lại tự bắt đầu cuộc gặp mới');
   check(!requests.some((url) => url.includes('background.mp3')), 'Không có yêu cầu nhạc nền khi chưa cấu hình');
 
   const mobile = await browser.newContext({ ...{ viewport: { width: 428, height: 926 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true }, reducedMotion: 'reduce' });
@@ -85,9 +91,10 @@ try {
     await settle(phone, scene);
   };
   await tapTo('meeting'); check(true, 'Chạm vùng trống để bắt đầu, không cần nút next');
+  check(await phone.locator('.is-discovered').count() === 1, 'Mobile tự gặp nhau trước khi chạm thêm');
   const firstMeetingCopy = await phone.locator('#copy').textContent();
   await tap(); check(await phone.locator('#experience').getAttribute('data-scene') === 'meeting' && await phone.locator('#copy').textContent() !== firstMeetingCopy, 'Một chạm đọc đoạn tiếp theo, không bỏ qua lời dẫn');
-  await tap(); check(await phone.locator('.is-discovered').count() === 1, 'Một chạm mở giao điểm, không cần nhắm đúng vật thể');
+  await tap(); check(await phone.locator('#experience').getAttribute('data-scene') === 'distance', 'Đọc xong lời dẫn thì chạm để đi tiếp, không cần mở cuộc gặp');
   await tapTo('distance');
   const cdp = await mobile.newCDPSession(phone);
   const firstDistanceCopy = await phone.locator('#copy').textContent();
@@ -161,6 +168,11 @@ try {
   await phone.waitForTimeout(1450);
   check(await phone.evaluate(() => roseFall.length > 5 && roseFall.at(-1).y > roseFall[0].y + 50 && roseFall.at(-1).opacity === 0), 'Mobile: the opened rose falls downward and fades out');
   check(await phone.locator('.is-discovered').count() === 1 && await phone.locator('#copy').textContent() !== '', 'The flower wish stays readable after the falling animation');
+  await phone.waitForFunction(() => document.querySelector('#flower-wish').dataset.phase === 'settled');
+  check(await phone.locator('#flower-wish p').evaluate(el => getComputedStyle(el).opacity === '1'), 'Mobile particle wish resolves into readable text');
+  await tap(); await phone.waitForTimeout(200);
+  check(await phone.locator('#flower-wish').evaluate(el => el.dataset.phase === 'blurring' && parseFloat(getComputedStyle(el).filter.replace('blur(', '')) > 0 && Number(getComputedStyle(el).opacity) < 1), 'Next mobile flower progressively blurs the previous wish');
+  await phone.waitForFunction(() => document.querySelector('#flower-wish').dataset.phase === 'settled');
   await phone.screenshot({ path: 'test-results/mobile-rose-down.png' });
 
   const fallbackContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -205,13 +217,19 @@ try {
       window.cameraTrace.push({ scene: this.active, z: this.camera.position.z, moving: Boolean(this.transition), opacity: Number(this.renderer.domElement.style.opacity || 1), continuousRoad: this.road === window.firstRoad && this.road.visible && this.road.parent === this.scene });
     };
   });
-  await normal.mouse.click(700, 160); await settle(normal, 'meeting', false);
+  await normal.mouse.click(700, 160);
+  await normal.waitForFunction(() => window.testWorld?.active === 1 && !window.testWorld.transition && window.testWorld.journey.busy);
   check(true, 'Chuyển camera với chuyển động thường hoàn tất');
   await normal.screenshot({ path: 'test-results/crossroads-desktop.png' });
   check(await normal.evaluate(() => {
     const { boy, girl, heart } = window.testWorld.crossroads.userData;
     return !heart.visible && boy.position.distanceTo(girl.position) > 2;
   }), 'The boy and girl start on separate branches, without a heart');
+  check((await normal.locator('.is-discovered').count()) === 1, 'The encounter starts automatically on arrival');
+  const initialSeparation = await normal.evaluate(() => {
+    const { boy, girl } = window.testWorld.crossroads.userData;
+    return boy.position.distanceTo(girl.position);
+  });
   const girlPoint = await normal.evaluate(() => {
     const world = window.testWorld, girl = world.crossroads.userData.girl;
     const point = girl.getWorldPosition(girl.position.clone());
@@ -221,9 +239,14 @@ try {
   });
   await normal.mouse.click(girlPoint.x, girlPoint.y);
   await normal.waitForTimeout(100);
-  check((await normal.locator('.is-discovered').count()) === 1, 'Raycaster: chạm trực tiếp vật thể 3D');
-  check(await normal.evaluate(() => window.lastWorldHit === 0 && window.testWorld.crossroads.userData.boy.isSprite && window.testWorld.crossroads.userData.girl.isSprite), 'Crossroads: tapping either 2D character opens the encounter');
+  check((await normal.locator('.is-discovered').count()) === 1 && await normal.locator('#experience').getAttribute('data-scene') === 'meeting', 'Chạm trong lúc hai người đang gặp nhau không bỏ qua cảnh');
+  check(await normal.evaluate(() => window.lastWorldHit === 0 && window.testWorld.crossroads.userData.boy.isSprite && window.testWorld.crossroads.userData.girl.isSprite), 'Raycaster still recognizes the 2D characters during the automatic encounter');
   check(await normal.evaluate(() => window.testWorld.journey.busy && !window.testWorld.crossroads.userData.heart.visible), 'Wait for the encounter before showing the heart or advancing');
+  await normal.waitForTimeout(300);
+  check(await normal.evaluate((distance) => {
+    const { boy, girl } = window.testWorld.crossroads.userData;
+    return boy.position.distanceTo(girl.position) < distance - 0.05;
+  }, initialSeparation), 'The two characters walk toward each other automatically');
   check(await normal.evaluate(() => {
     const world = window.testWorld, road = world.road.userData;
     return road.curve.getPoint(0).z > world.groups[0].position.z
@@ -251,9 +274,39 @@ try {
   await normal.keyboard.press('ArrowRight'); await normal.keyboard.press('ArrowRight');
   check(await normal.locator('.is-discovered p').count() === 3, 'Bàn phím mở các trái tim theo cùng thứ tự chạm màn hình');
   await normal.waitForTimeout(1000);
-  await normal.screenshot({ path: 'test-results/distance-hearts-left.png', fullPage: true, animations: 'disabled' });
+  check(await normal.evaluate(() => {
+    const markers = [...document.querySelectorAll('#discoveries [data-discovery]')];
+    return markers.every((marker, i) => {
+      const bounds = marker.getBoundingClientRect();
+      const point = window.testWorld.floaters[i].getWorldPosition(window.testWorld.floaters[i].position.clone()).project(window.testWorld.camera);
+      const x = (point.x + 1) * innerWidth / 2, y = (1 - point.y) * innerHeight / 2;
+      return x > innerWidth / 2 && Math.abs(x - bounds.left - bounds.width / 2) < 2 && Math.abs(y - bounds.top - bounds.height / 2) < 2;
+    });
+  }), 'Desktop hearts dock beside their text on the right');
+  await normal.screenshot({ path: 'test-results/distance-hearts-right.png', fullPage: true, animations: 'disabled' });
   await normal.mouse.click(700, 160); await settle(normal, 'garden', false);
-  for (let i = 0; i < 3; i++) await normal.mouse.click(700, 160);
+  for (let i = 0; i < 3; i++) {
+    const previousWish = await normal.locator('#flower-wish p').textContent();
+    await normal.mouse.click(700, 160); await normal.waitForTimeout(200);
+    if (i === 0) {
+      check(await normal.locator('#flower-wish').evaluate(el => {
+        const canvas = el.querySelector('canvas'), ctx = canvas.getContext('2d');
+        return el.dataset.phase === 'gathering' && ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((value, index) => index % 4 === 3 && value > 0) && Number(getComputedStyle(el.querySelector('p')).opacity) === 0;
+      }), 'The wish begins as real particles before the solid text appears');
+      await normal.waitForTimeout(700);
+      await normal.screenshot({ path: 'test-results/flower-wish-particles.png', animations: 'disabled' });
+    } else {
+      check(await normal.locator('#flower-wish').evaluate(el => el.dataset.phase === 'blurring' && getComputedStyle(el).filter !== 'none' && Number(getComputedStyle(el).opacity) < 1) && await normal.locator('#flower-wish p').textContent() === previousWish, 'The old wish blurs before being replaced');
+    }
+    await normal.waitForFunction(() => document.querySelector('#flower-wish').dataset.phase === 'settled');
+    check((await normal.locator('#flower-wish p').textContent()).replace(/\s+/g, ' ') === text(CONTENT.scenes[3].interactions[i]), 'Particles resolve into the correct full wish');
+    check(await normal.evaluate(index => {
+      const box = document.querySelector('#flower-wish').getBoundingClientRect();
+      const anchor = window.testWorld.flowerAnchor(index);
+      return box.bottom < anchor.y && box.left >= innerWidth * 0.53 - 1 && box.right <= innerWidth + 1;
+    }, i), 'The wish sits above its bloom in the right visual area');
+  }
+  await normal.screenshot({ path: 'test-results/flower-wish-desktop.png', animations: 'disabled' });
   await normal.mouse.click(700, 160); await settle(normal, 'time');
   await normal.mouse.click(700, 160); await settle(normal, 'gift');
   await normal.mouse.click(700, 160);
@@ -277,6 +330,20 @@ try {
   await normal.setViewportSize({ width: 428, height: 926 });
   await noOverflow(normal, 'Cảnh trái tim sinh nhật trên mobile');
   await normal.screenshot({ path: 'test-results/gift-hearts-mobile.png', fullPage: true });
+  await normal.locator('.brand').click(); await settle(normal, 'invitation');
+  await normal.mouse.click(90, 160);
+  await normal.waitForFunction(() => window.testWorld?.active === 1 && !window.testWorld.transition && window.testWorld.journey.busy);
+  check(await normal.evaluate(() => {
+    const { boy, girl, heart } = window.testWorld.crossroads.userData;
+    return window.testWorld.mobile && !heart.visible && boy.position.distanceTo(girl.position) > 2;
+  }), 'Replaying on mobile restarts the automatic encounter from separate paths');
+  await settle(normal, 'meeting');
+  check(await normal.evaluate(() => {
+    const { boy, girl, heart } = window.testWorld.crossroads.userData;
+    return heart.visible && boy.position.distanceTo(girl.position) < 1.1;
+  }), 'Mobile characters meet and reveal the heart without a second tap');
+  check(await normal.locator('#copy').textContent() === text(CONTENT.scenes[1].paragraphs[0]).replace(/\s+/g, ' ').trim(), 'Automatic meeting preserves the first mobile reading paragraph');
+  await normal.screenshot({ path: 'test-results/destiny-mobile.png', animations: 'disabled' });
   check(errors.length === 0, `Không có lỗi runtime hoặc asset: ${errors.join('; ')}`);
   console.log(`\n${checks} kiểm tra thành công. Ảnh kiểm tra: test-results/`);
 } finally { await browser.close(); await server.close(); }

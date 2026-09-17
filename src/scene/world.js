@@ -6,6 +6,7 @@ import { roseAssets, backgroundRoses, updateRose } from './roses.js';
 import { crossroads, updateCrossroads, setCrossroadsGround } from './crossroads.js';
 import { journeyRoad, disposeRoad } from './journey-road.js';
 import { CONTENT, text } from '../content.js';
+import { DISPLAY_FONT } from '../utils/fonts.js';
 import { crystal, flower, giftBox, glow, glowTexture, ring, material } from './objects.js';
 
 const SCENE_SPACING = 24;
@@ -121,8 +122,8 @@ export class World {
   buildKeepsakes() { this.keepsakes = Array.from({ length: 3 }, () => { const gem = crystal(0.14); this.scene.add(gem); return gem; }); }
   buildFinalParticles() {
     const canvas = document.createElement('canvas'); canvas.width = 1024; canvas.height = 384;
-    const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'italic 88px Georgia'; ctx.fillText('Happy Birthday,', 512, 140);
-    const name = text(CONTENT.recipientName); ctx.font = `58px Georgia`; while (ctx.measureText(name).width > 950) { const size = parseInt(ctx.font) || 58; ctx.font = `${size - 2}px Georgia`; }
+    const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = `italic 88px ${DISPLAY_FONT}`; ctx.fillText('Happy Birthday,', 512, 140);
+    const name = text(CONTENT.recipientName); ctx.font = `58px ${DISPLAY_FONT}`; while (ctx.measureText(name).width > 950) { const size = parseInt(ctx.font) || 58; ctx.font = `${size - 2}px ${DISPLAY_FONT}`; }
     ctx.fillText(name, 512, 235);
     const pixels = ctx.getImageData(0, 0, 1024, 384).data; const samples = [];
     for (let y = 0; y < 384; y += 4) for (let x = 0; x < 1024; x += 4) if (pixels[(y * 1024 + x) * 4 + 3] > 100) samples.push([(x - 512) / 140, (190 - y) / 140, 0]);
@@ -151,6 +152,7 @@ export class World {
     this.giftSwarm.material.uniforms.uScale.value = innerHeight * this.renderer.getPixelRatio() * 1.35;
     this.giftSwarm.scale.setScalar(this.mobile ? 0.85 : 1); this.giftSwarm.position.y = this.mobile ? -0.55 : 0;
     this.giftSwarm.material.uniforms.uDirection.value = this.mobile ? -1 : 1;
+    this.giftMessage.userData.resize(this.mobile);
     if (this.mobile) this.limitGiftHearts(CONTENT.giftHearts.mobileCount);
     this.groups.forEach((group) => { group.position.x = this.mobile ? 0 : Math.min(3.6, this.camera.aspect * 2.3); group.position.y = this.mobile ? 1.8 + 1575 / innerHeight : 0.5; group.scale.setScalar(this.mobile ? THREE.MathUtils.clamp(555 / innerHeight, 0.58, 0.82) : 1); });
     const road = journeyRoad(this.groups, this.mobile);
@@ -179,6 +181,15 @@ export class World {
     if (this.active === 3) { object.userData.bloom = 1; object.userData.flightStart = this.time; }
   }
   setDistanceAnchors(anchors) { this.distanceAnchors = anchors; }
+  flowerAnchor(index) {
+    const flower = this.interactives[3][index];
+    if (!flower) return null;
+    this.wishAnchor ??= new THREE.Vector3();
+    // Keep the words above the bloom's original position as it falls on mobile.
+    this.wishAnchor.copy(flower.userData.restPosition); this.wishAnchor.y += 0.8;
+    this.groups[3].localToWorld(this.wishAnchor); this.wishAnchor.project(this.camera);
+    return { x: (this.wishAnchor.x + 1) * innerWidth / 2, y: (1 - this.wishAnchor.y) * innerHeight / 2 };
+  }
   hit(clientX, clientY) {
     if (this.transition) return null;
     this.pointer.set(clientX / innerWidth * 2 - 1, -(clientY / innerHeight) * 2 + 1);
@@ -207,7 +218,12 @@ export class World {
       const duration = this.reduced ? 150 : CONTENT.timing.camera;
       const p = THREE.MathUtils.clamp((now - this.transition.start) / duration, 0, 1), eased = p * p * p * (10 - 15 * p + 6 * p * p);
       this.placeCamera(THREE.MathUtils.lerp(this.transition.from, this.transition.to, eased));
-      if (p === 1) { this.transition = null; this.renderer.domElement.style.opacity = '1'; this.journey.busy = false; this.journey.notify(); }
+      if (p === 1) {
+        this.transition = null; this.renderer.domElement.style.opacity = '1'; this.journey.busy = false;
+        // Begin the encounter on arrival, once per journey, without a tap.
+        if (this.active === 1 && !this.journey.unlocked) this.journey.discover(0);
+        this.journey.notify();
+      }
     }
     this.animateObjects(delta);
     if (this.meetingEnd != null && (this.time >= this.meetingEnd || this.reduced)) {
