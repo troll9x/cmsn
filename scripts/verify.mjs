@@ -25,7 +25,7 @@ try {
   await page.goto('http://127.0.0.1:5178');
   await page.locator('#loading').waitFor({ state: 'hidden' });
   check(await page.locator('meta[property="og:title"]').getAttribute('content') === 'Chúc mừng sinh nhật, Chi!', 'Open Graph có tiêu đề cho Messenger');
-  check((await page.locator('meta[property="og:description"]').getAttribute('content')).includes('dành riêng cho Chi'), 'Open Graph có mô tả cho Messenger');
+  check(await page.locator('meta[property="og:description"]').getAttribute('content') === 'Ngày 24 tháng 9, anh có vài điều muốn nói riêng với Chi.', 'Open Graph có mô tả tự nhiên cho Messenger');
   check(await page.locator('meta[property="og:image"]').getAttribute('content') === 'https://hpbd.nguyenhongson.vn/og-birthday.png', 'Open Graph trỏ tới thumbnail HTTPS tuyệt đối');
   check(await page.locator('#world').isVisible(), 'WebGL khởi tạo');
   check((await page.locator('#scene-title').innerText()).replace(/\s+/g, ' ').trim() === text(CONTENT.scenes[0].mobileTitle).replace(/\s+/g, ' ').trim(), 'Desktop dùng cùng tiêu đề với mobile');
