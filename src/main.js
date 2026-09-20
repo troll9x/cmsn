@@ -183,7 +183,6 @@ async function next() {
     schedule(() => { journey.gift = 'revealed'; render(); }, motion.matches ? 300 : CONTENT.timing.reveal);
     schedule(() => {
       journey.gift = 'handoff'; journey.busy = false;
-      reader.positions.set(`${journey.index}:opened`, readingPages([...journey.scene.revealedParagraphs, journey.scene.handoff]).length - 1);
       render(); $('#announcement').textContent = text(journey.scene.handoff);
     }, (motion.matches ? 300 : CONTENT.timing.reveal) + CONTENT.timing.handoff);
     return;

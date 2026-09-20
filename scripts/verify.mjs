@@ -59,11 +59,12 @@ try {
   await page.mouse.click(700, 160);
   check(await page.locator('#experience').getAttribute('aria-busy') === 'true', 'Khóa thao tác trong lúc mở quà');
   check(await page.locator('#gift-celebration').isHidden(), 'Chưa hiện chữ trước khi trái tim tụ lại');
-  await page.waitForFunction(() => document.querySelector('#copy').textContent.includes('khoảnh khắc đáng nhớ'));
-  check(await page.locator('#handoff').isHidden(), 'Có khoảng dừng trước lời mời nhận quà thật');
+  await page.waitForFunction(() => document.querySelector('#copy').textContent.includes('lý do để mỉm cười'));
+  check(await page.locator('#handoff').isHidden(), 'Có khoảng dừng trước khi hiện lời hẹn');
   check(await page.locator('#gift-celebration').textContent() === 'CHÚC MỪNG SINH NHẬT' && await page.locator('#gift-celebration').isVisible(), 'Trái tim đã tụ: hiện đúng chữ CHÚC MỪNG SINH NHẬT');
   await page.waitForFunction(() => !document.querySelector('#handoff').hidden, null, { timeout: 12000 });
-  check((await page.locator('#handoff').textContent()).includes('bên cạnh'), 'Hiển thị lời dẫn trao quà ngoài đời');
+  check((await page.locator('#handoff').textContent()).includes('tối nay'), 'Hiển thị lời hẹn cho buổi tối');
+  check(!(await page.locator('#experience').textContent()).toLocaleLowerCase('vi').includes('món quà'), 'Nội dung hiển thị không nhắc đến món quà');
   await page.screenshot({ path: 'test-results/gift-desktop.png', fullPage: true });
   await page.mouse.click(700, 160); await settle(page, 'closing');
   check((await page.locator('#copy p').count()) === 4, 'Lời chúc cuối đủ bốn đoạn');
@@ -127,8 +128,13 @@ try {
   await phone.setViewportSize({ width: 428, height: 926 });
   await tapTo('time'); await tapTo('gift');
   await tap(); await phone.locator('#gift-celebration').waitFor({ state: 'visible' });
-  check(await phone.locator('#gift-celebration').textContent() === CONTENT.scenes[5].celebration, 'Một chạm vùng trống mở quà và hiện lời chúc');
-  await phone.waitForFunction(() => document.querySelector('#experience').getAttribute('aria-busy') === 'false' && document.querySelector('#copy').textContent.includes('bên cạnh'));
+  check(await phone.locator('#gift-celebration').textContent() === CONTENT.scenes[5].celebration, 'Một chạm vùng trống mở bất ngờ và hiện lời chúc');
+  await phone.waitForFunction(() => document.querySelector('#experience').getAttribute('aria-busy') === 'false');
+  check((await phone.locator('#copy').textContent()).includes('lý do để mỉm cười'), 'Mobile giữ lại lời chúc đầu tiên sau hiệu ứng');
+  await tap();
+  check((await phone.locator('#copy').textContent()).includes('tối nay'), 'Mobile đọc lời mời đi date theo đúng thứ tự');
+  await tap();
+  check((await phone.locator('#copy').textContent()).includes('hẹn em nhé'), 'Mobile hiện câu hẹn cuối trước khi chuyển cảnh');
   await phone.screenshot({ path: 'test-results/gift-hearts-mobile.png', fullPage: true });
   await tapTo('closing');
   check(await phone.locator('#birthday-date').evaluate((date) => parseFloat(getComputedStyle(date).fontSize) >= 20), 'Ngày sinh nhật trên mobile đủ lớn để đọc rõ');
@@ -277,7 +283,8 @@ try {
   await normal.screenshot({ path: 'test-results/distance-heart-flight.png', fullPage: true });
   await normal.keyboard.press('ArrowRight'); await normal.keyboard.press('ArrowRight');
   check(await normal.locator('.is-discovered p').count() === 3, 'Bàn phím mở các trái tim theo cùng thứ tự chạm màn hình');
-  await normal.waitForTimeout(1000);
+  // The flight lasts 950 ms; leave frame-scheduling margin before measuring the final dock.
+  await normal.waitForTimeout(1400);
   check(await normal.evaluate(() => {
     const markers = [...document.querySelectorAll('#discoveries [data-discovery]')];
     return markers.every((marker, i) => {

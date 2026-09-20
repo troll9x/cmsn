@@ -1,6 +1,6 @@
 # Một chút đặc biệt
 
-Một website chúc mừng sinh nhật bằng **Vite + Vanilla JavaScript + Three.js**. Người nhận đi qua bảy không gian 3D bằng cách **chạm nhẹ vào vùng trống hoặc lời nhắn**, bàn phím hoặc thao tác vuốt. Trên điện thoại, mỗi lượt chỉ hiện một đoạn ngắn; chạm tiếp để đọc, mở từng pha lê/bông hoa, rồi sang cảnh mới. Kịch bản nhẹ nhàng, không yêu cầu đáp lại tình cảm; cao trào là lời mời nhìn món quà thật bên cạnh người nhận.
+Một website chúc mừng sinh nhật bằng **Vite + Vanilla JavaScript + Three.js**. Người nhận đi qua bảy không gian 3D bằng cách **chạm nhẹ vào vùng trống hoặc lời nhắn**, bàn phím hoặc thao tác vuốt. Trên điện thoại, mỗi lượt chỉ hiện một đoạn ngắn; chạm tiếp để đọc, mở từng pha lê/bông hoa, rồi sang cảnh mới. Kịch bản nhẹ nhàng, cao trào là lời hẹn dành cho buổi tối sinh nhật.
 
 Thời gian trải nghiệm khoảng **4–5 phút**, tùy nhịp đọc và khám phá. Không tự chuyển cảnh hoặc bắt người nhận đọc trong một thời hạn. Tất cả hình ảnh, vật thể, ánh sáng và texture được dựng tại chỗ; không cần ảnh bên ngoài, CDN, backend hoặc API trả phí.
 
@@ -57,11 +57,11 @@ Các token được thay tự động trong nội dung:
 | `{sender}` / `{recipient}` | Đại từ xưng hô |
 | `{senderCapital}` / `{recipientCapital}` | Đại từ có chữ đầu viết hoa |
 
-Đổi `openingTitle` để thay tiêu đề mở đầu. Đổi `scenes[n].mobileTitle`, `paragraphs`, `interactions`, `caption` và `captionItalic` để sửa từng cảnh. `mobileTitle` là tiêu đề chính dùng chung trên desktop và điện thoại, bao gồm cách xuống dòng nghệ thuật; các đoạn nội dung trên điện thoại tự chia thành lượt đọc nhưng vẫn giữ nguyên mọi từ. Cảnh món quà có thêm `revealedParagraphs` và `handoff`.
+Đổi `openingTitle` để thay tiêu đề mở đầu. Đổi `scenes[n].mobileTitle`, `paragraphs`, `interactions`, `caption` và `captionItalic` để sửa từng cảnh. `mobileTitle` là tiêu đề chính dùng chung trên desktop và điện thoại, bao gồm cách xuống dòng nghệ thuật; các đoạn nội dung trên điện thoại tự chia thành lượt đọc nhưng vẫn giữ nguyên mọi từ. Cảnh lời hẹn có thêm `revealedParagraphs` và `handoff`.
 
 Đổi **`CONTENT.finalMessage`** để thay toàn bộ lời nhắn cuối; dùng `\n` để xuống dòng, `\n\n` để ngăn đoạn. `finalTitle` là tiêu đề HTML cuối; chữ ký lấy từ `PROFILE.signature` trong `personal.config.js`. Tên trong chữ bằng hạt sáng tự lấy từ `recipientName`. Nội dung được escape trước khi đưa vào HTML, nên tên chứa dấu nháy hoặc ký tự đặc biệt vẫn an toàn.
 
-Hãy giữ lời nhắn chân thành, không tạo cảm giác người nhận phải dành thời gian hoặc đáp lại tình cảm vì món quà.
+Hãy giữ lời nhắn chân thành và để người nhận thoải mái đón nhận lời hẹn.
 
 ## Nhạc nền tùy chọn
 
@@ -79,7 +79,7 @@ Sửa `CONTENT.colors` để thay nền đêm, hồng pha lê, hồng nhạt, ng
 
 Sửa `CONTENT.garden` để đổi màu hoa hồng, hoa màu kem, lớp cánh ở tâm, lá và thân. Mỗi bông gồm 31 cánh mỏng, cong, xếp thành năm lớp; khi chạm, các lớp cánh mở dần. Thân cong và lá xanh đi cùng bông hoa; khu vườn có hoa nhỏ phía sau và sương nhẹ.
 
-Dòng `scenes[5].celebration` được dựng bên trong trái tim lớn ở cảnh mở quà. Có thể đổi thành `CHÚC MỪNG SINH NHẬT` hoặc `Happy Birthday`; lời chúc hiện bằng chữ serif thanh và dòng viết nghiêng, kèm tên người nhận và ngày sinh nhật từ `personal.config.js`. Nội dung khác vẫn tự chia dòng và thu gọn. Chữ cùng đổi vị trí và tỉ lệ với trái tim trên điện thoại, chỉ hiện sau khi các hạt đã tụ lại; trình đọc màn hình cũng nhận được lời chúc này.
+Dòng `scenes[5].celebration` được dựng bên trong trái tim lớn ở cảnh lời hẹn. Có thể đổi thành `CHÚC MỪNG SINH NHẬT` hoặc `Happy Birthday`; lời chúc hiện bằng chữ serif thanh và dòng viết nghiêng, kèm tên người nhận và ngày sinh nhật từ `personal.config.js`. Nội dung khác vẫn tự chia dòng và thu gọn. Chữ cùng đổi vị trí và tỉ lệ với trái tim trên điện thoại, chỉ hiện sau khi các hạt đã tụ lại; trình đọc màn hình cũng nhận được lời chúc này.
 
 Website dùng **Lora** (thường và nghiêng) cho tiêu đề, chú thích, lời chúc và chữ trong hiệu ứng; **Be Vietnam Pro** (400/500) cho nội dung và giao diện. Hai bộ font có hỗ trợ tiếng Việt, được lưu tại `public/fonts/` bằng WOFF, giữ toàn bộ ký tự và bảng định vị dấu. Không gọi dịch vụ font ngoài khi xem website. Nguồn và giấy phép: [Lora](https://github.com/google/fonts/tree/main/ofl/lora), [Be Vietnam Pro](https://github.com/google/fonts/tree/main/ofl/bevietnampro); các file `OFL-lora.txt` và `OFL-bevietnampro.txt` được kèm trong thư mục font.
 
@@ -90,18 +90,18 @@ Website dùng **Lora** (thường và nghiêng) cho tiêu đề, chú thích, l�
 | Thuộc tính | Tác dụng |
 | --- | --- |
 | `camera` | Thời gian chuyển camera giữa hai cảnh |
-| `reveal` | Thời gian mở hộp, trái tim bay ra và tụ thành trái tim lớn; mặc định 8,5 giây |
-| `handoff` | Khoảng dừng sau khi mở quà, trước lời mời trao quà thật |
+| `reveal` | Thời gian mở bất ngờ, trái tim bay ra và tụ thành trái tim lớn; mặc định 8,5 giây |
+| `handoff` | Khoảng dừng trước khi hiện lời hẹn cuối cảnh |
 | `heartHold` | Giữ trái tim; mặc định 2,6 giây |
 | `heartDissolve` | Thời gian trái tim tan thành ánh sáng |
 
-Khi người nhận bật giảm chuyển động, camera rút ngắn, chuyển động trôi dừng và số hạt nền giảm. Kịch bản và khoảng dừng nhận quà vẫn được giữ.
+Khi người nhận bật giảm chuyển động, camera rút ngắn, chuyển động trôi dừng và số hạt nền giảm. Kịch bản và khoảng dừng trước lời hẹn vẫn được giữ.
 
 Bảy cảnh nằm nối tiếp trên cùng một trục chiều sâu. Mỗi lần đi tiếp, camera tiến sâu về cảnh kế tiếp và giữ hướng nhìn tới cuối hành trình. Cảnh tiếp theo có thể nhìn thấy ở phía trước; không làm mờ toàn màn hình khi chuyển cảnh hoặc đẩy trái tim mở đầu ngược hướng camera.
 
 Ba nét mảnh uốn mềm như khuông nhạc nối liền từ cảnh đầu đến cảnh cuối, luôn được giữ trong không gian khi camera di chuyển. Các nét màu hồng và vàng nhạt không có phần nền tô đặc. Hai nhánh phụ tách ra tại cảnh gặp gỡ; lối chính sáng nhẹ khi chạm và tiếp tục xuyên qua các cảnh sau. Nét đường nhạt dần theo chiều sâu và ở phần sát camera; các hình của cảnh phía xa chìm trong sương để cảnh hiện tại nổi bật.
 
-Trên điện thoại, trái tim đã chạm bay xuống vị trí lời nhắn theo thứ tự; bông hoa đã chạm nở, rơi nhẹ xuống rồi mờ dần trong 1,4 giây. Trái tim ở cảnh gặp gỡ xuất hiện theo hướng rơi nhẹ, các trái tim mở quà bay tỏa xuống dưới, và hạt ở đoạn kết tan xuống dưới. Hình trái tim sinh nhật cuối cùng vẫn đứng đúng chiều, với chữ ở bên trong. Chế độ giảm chuyển động đặt hiệu ứng ngay tại trạng thái cuối.
+Trên điện thoại, trái tim đã chạm bay xuống vị trí lời nhắn theo thứ tự; bông hoa đã chạm nở, rơi nhẹ xuống rồi mờ dần trong 1,4 giây. Trái tim ở cảnh gặp gỡ xuất hiện theo hướng rơi nhẹ, các trái tim ở cảnh lời hẹn bay tỏa xuống dưới, và hạt ở đoạn kết tan xuống dưới. Hình trái tim sinh nhật cuối cùng vẫn đứng đúng chiều, với chữ ở bên trong. Chế độ giảm chuyển động đặt hiệu ứng ngay tại trạng thái cuối.
 
 ## Các cảnh và điều khiển
 
@@ -111,7 +111,7 @@ Trên điện thoại, trái tim đã chạm bay xuống vị trí lời nhắn 
 4. **Khu vườn**: chạm bông hoa để nở hoa và mở lời chúc ngay phía trên. Các hạt nhỏ bay từ hoa, tụ theo hình dáng từng chữ và dấu tiếng Việt, rồi chuyển thành chữ rõ nét. Chạm bông tiếp theo sẽ làm câu cũ blur và mờ dần trong 0,52 giây, trước khi các hạt tạo câu mới. Mỗi lần chỉ hiện một lời chúc. Chế độ giảm chuyển động hiển thị chữ ngay; quay lại giữ lời chúc đã mở.
 
 5. **Thời gian**: pha lê xoay, tụ về mặt đồng hồ và cổng ánh sáng.
-6. **Món quà**: tháo nơ, mở hộp bo mềm, vô số trái tim nhỏ bay ra rồi tụ thành trái tim lớn. Sau đó hiện **CHÚC MỪNG SINH NHẬT**, rồi sau khoảng dừng hiển thị lời mời nhìn món quà bên cạnh. **Đây là lúc người gửi trao Apple Watch thật.** Dòng chữ chỉnh tại `scenes[5].celebration` trong `src/content.js`. Hiệu ứng dùng 60.000 hạt trên desktop, 8.000 trên điện thoại và 1.200 khi giảm chuyển động; có thể chỉnh `CONTENT.giftHearts`. GPU xử lý chuyển động trong một draw call, viền trái tim được làm mềm; số hạt tự giảm khi thiết bị chậm.
+6. **Lời hẹn tối nay**: mở lớp bất ngờ, vô số trái tim nhỏ bay ra rồi tụ thành trái tim lớn. Sau đó hiện **CHÚC MỪNG SINH NHẬT**, rồi sau khoảng dừng hiển thị lời hẹn cho buổi tối. Dòng chữ chỉnh tại `scenes[5].celebration` trong `src/content.js`. Hiệu ứng dùng 60.000 hạt trên desktop, 8.000 trên điện thoại và 1.200 khi giảm chuyển động; có thể chỉnh `CONTENT.giftHearts`. GPU xử lý chuyển động trong một draw call, viền trái tim được làm mềm; số hạt tự giảm khi thiết bị chậm.
 7. **Lời chúc cuối**: hạt sáng kết chữ; chạm sau khi đọc hết lời nhắn để tạo trái tim pha lê rồi tan thành hạt sáng. Khi hiện lời nhắc xem lại, chạm tiếp để bắt đầu hành trình mới.
 
 Ở cảnh **Những niềm vui nhỏ**, mỗi lần chạm màn hình sẽ đưa một trái tim thu về cạnh câu tương ứng. Trên desktop, ba trái tim và câu chữ nằm ở vùng bên phải, cùng phía với hình ảnh; phần lời dẫn ở bên trái. Trên điện thoại, trái tim vẫn bay xuống cạnh lời nhắn. Ba câu hiện lần lượt và giữ lại; lần chạm kế tiếp sau khi mở đủ ba câu sẽ sang khu vườn. Chế độ giảm chuyển động đặt trái tim cạnh chữ ngay lập tức.
@@ -170,6 +170,6 @@ npm test
 
 Script tự mở Vite ở cổng 5178 và dùng Microsoft Edge headless. Máy cần cài Edge; có thể đặt biến môi trường `TEST_BROWSER=chrome` nếu dùng Chrome đã cài. Trên hệ điều hành khác, hãy chọn một channel Playwright có sẵn hoặc thay tùy chọn launch để sử dụng Chromium của Playwright.
 
-Kiểm tra gồm cả hành trình, điều kiện tương tác, giao diện không có button và bàn phím, cảm ứng và vuốt, trạng thái quay lại/xem lại, khoảng dừng trao quà, reduced motion, raycaster, kích thước iPhone 428×926, điện thoại 360×667, xoay ngang, thiếu MP3 và fallback WebGL. Ảnh chụp được ghi vào `test-results/` và không đi vào bản production.
+Kiểm tra gồm cả hành trình, điều kiện tương tác, giao diện không có button và bàn phím, cảm ứng và vuốt, trạng thái quay lại/xem lại, khoảng dừng trước lời hẹn, reduced motion, raycaster, kích thước iPhone 428×926, điện thoại 360×667, xoay ngang, thiếu MP3 và fallback WebGL. Ảnh chụp được ghi vào `test-results/` và không đi vào bản production.
 
-Kiểm tra mobile trên máy tính dùng mô phỏng trình duyệt; **chưa đo FPS trên iPhone vật lý hoặc chạy Safari iOS thực tế**. Trước khi trao quà, nên mở bản deploy trên chiếc điện thoại sẽ sử dụng, chỉnh tên/lời nhắn và đi hết hành trình một lần.
+Kiểm tra mobile trên máy tính dùng mô phỏng trình duyệt; **chưa đo FPS trên iPhone vật lý hoặc chạy Safari iOS thực tế**. Trước ngày sinh nhật, nên mở bản deploy trên chiếc điện thoại sẽ sử dụng, chỉnh tên/lời nhắn và đi hết hành trình một lần.
