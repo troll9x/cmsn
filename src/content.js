@@ -21,7 +21,7 @@ export const CONTENT = {
   timing: { camera: 1800, reveal: 8500, handoff: 6500, heartHold: 2600, heartDissolve: 1800 },
   giftHearts: { desktopCount: 60000, mobileCount: 8000, reducedCount: 1200 },
   garden: { roseColor: '#D9799F', ivoryColor: '#EEDCC8', roseCenter: '#9E476D', ivoryCenter: '#BA9875', leafColor: '#58674F', stemColor: '#6F785C' },
-  audio: { enabled: false, src: 'audio/background.mp3', volume: 0.25 },
+  audio: { enabled: true, src: 'audio/background.mp3', volume: 0.25 },
   ui: {
     dedication: PROFILE.birthday ? 'SINH NHẬT CỦA CHI' : 'DÀNH RIÊNG CHO SINH NHẬT CHI',
     start: 'Bắt đầu hành trình', next: 'Đi tiếp', back: 'Quay lại',

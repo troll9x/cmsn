@@ -67,13 +67,13 @@ Hãy giữ lời nhắn chân thành và để người nhận thoải mái đó
 
 ## Nhạc nền tùy chọn
 
-Website mặc định **không phát nhạc** và không yêu cầu tải file nhạc. Có sẵn thư mục `public/audio/`.
+Website đã có nhạc nền tại `public/audio/background.mp3`. Nhạc được thử phát khi trang mở, tự lặp lại và sẽ phát ở lần chạm đầu tiên nếu trình duyệt chặn autoplay có tiếng.
 
-1. Đặt nhạc tự sáng tác hoặc file bạn có quyền sử dụng tại **`public/audio/background.mp3`**.
-2. Đổi `CONTENT.audio.enabled` thành `true`.
+1. Đặt file nhạc tại **`public/audio/background.mp3`**.
+2. Giữ `CONTENT.audio.enabled` là `true`.
 3. Có thể đổi `audio.src` (đường dẫn tính từ `public/`) và `audio.volume` trong khoảng 0–1.
 
-Nhạc chỉ tải/phát sau khi nhấn bắt đầu hoặc thực hiện thao tác đi tiếp ở cảnh mở đầu. Nút góc phải cho phép bật/tắt. Khi file thiếu, không đúng định dạng hoặc bị chặn, lời chúc và hành trình vẫn hoạt động. File thiếu chỉ được yêu cầu một lần, không có vòng lặp tải lại. Âm thanh tạm dừng khi tab bị ẩn. Không có nhạc có bản quyền được cung cấp cùng dự án.
+Trình duyệt thường chặn âm thanh có tiếng trước thao tác đầu tiên. Website vẫn thử phát ngay; nếu bị chặn, lần chạm bắt đầu hành trình sẽ phát nhạc. Khi file thiếu, không đúng định dạng hoặc bị chặn, lời chúc và hành trình vẫn hoạt động. File thiếu chỉ được yêu cầu một lần, không có vòng lặp tải lại. Âm thanh tạm dừng khi tab bị ẩn.
 
 ## Màu sắc và nhịp độ
 

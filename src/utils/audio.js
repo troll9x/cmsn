@@ -3,7 +3,6 @@ import { CONTENT } from '../content.js';
 export class Sound {
   constructor() { this.available = CONTENT.audio.enabled; this.on = false; this.started = false; }
   async start() {
-    this.started = true;
     if (!this.available) return;
     if (!this.audio) {
       // A single request, only after a gesture. No polling or repeated missing-file errors.
@@ -14,7 +13,7 @@ export class Sound {
         this.audio = new Audio(this.url); this.audio.loop = true; this.audio.volume = CONTENT.audio.volume;
       } catch { this.available = false; return; }
     }
-    try { await this.audio.play(); this.on = true; } catch { this.on = false; }
+    try { await this.audio.play(); this.on = true; this.started = true; } catch { this.on = false; }
   }
   async toggle() {
     if (!this.started) return;

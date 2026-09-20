@@ -78,7 +78,7 @@ try {
   await page.mouse.click(700, 160); await settle(page, 'invitation');
   await page.mouse.click(700, 160); await settle(page, 'meeting', false);
   check((await page.locator('.is-discovered').count()) === 1, 'Xem lại tự bắt đầu cuộc gặp mới');
-  check(!requests.some((url) => url.includes('background.mp3')), 'Không có yêu cầu nhạc nền khi chưa cấu hình');
+  check(requests.filter((url) => url.includes('background.mp3')).length === 1, 'Nhạc nền cục bộ được tải đúng một lần');
 
   const mobile = await browser.newContext({ ...{ viewport: { width: 428, height: 926 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true }, reducedMotion: 'reduce' });
   const phone = await mobile.newPage(); phone.on('pageerror', (error) => errors.push(error.message));
@@ -200,16 +200,32 @@ try {
 
   const missingContext = await browser.newContext({ reducedMotion: 'reduce' });
   const missing = await missingContext.newPage(); missing.on('pageerror', (error) => errors.push(error.message));
-  await missing.route('**/src/content.js', async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, body: (await response.text()).replace('audio: { enabled: false', 'audio: { enabled: true') });
-  });
+  await missing.route('**/audio/background.mp3', (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'missing' }));
   let audioRequests = 0; missing.on('request', (request) => { if (request.url().includes('background.mp3')) audioRequests++; });
   await missing.goto('http://127.0.0.1:5178'); await missing.locator('#loading').waitFor({ state: 'hidden' });
-  check(audioRequests === 0, 'Không tải nhạc trước thao tác bắt đầu');
-  await missing.mouse.click(700, 160); await settle(missing, 'meeting', false);
   await missing.waitForFunction(() => document.querySelector('#experience').dataset.sound === 'unavailable');
-  check(audioRequests === 1 && await missing.locator('button').count() === 0, 'Bật nhạc nhưng thiếu MP3: thử một lần và chuyển sang im lặng');
+  check(audioRequests === 1, 'File nhạc thiếu chỉ được yêu cầu một lần');
+  await missing.mouse.click(700, 160); await settle(missing, 'meeting', false);
+  check(audioRequests === 1 && await missing.locator('button').count() === 0, 'Thiếu MP3: hành trình tiếp tục mà không tải lại');
+
+  const blockedContext = await browser.newContext({ reducedMotion: 'reduce' });
+  await blockedContext.addInitScript(() => {
+    window.audioPlayAttempts = [];
+    HTMLMediaElement.prototype.play = function () {
+      window.audioPlayAttempts.push({ loop: this.loop, volume: this.volume });
+      return window.audioPlayAttempts.length === 1
+        ? Promise.reject(new DOMException('Autoplay blocked', 'NotAllowedError'))
+        : Promise.resolve();
+    };
+  });
+  const blocked = await blockedContext.newPage(); blocked.on('pageerror', (error) => errors.push(error.message));
+  await blocked.goto('http://127.0.0.1:5178'); await blocked.locator('#loading').waitFor({ state: 'hidden' });
+  await blocked.waitForFunction(() => window.audioPlayAttempts.length === 1);
+  check(await blocked.locator('#experience').getAttribute('data-sound') === 'off', 'Trình duyệt chặn autoplay: trang vẫn sẵn sàng chờ lần chạm đầu');
+  await blocked.mouse.click(700, 160); await settle(blocked, 'meeting', false);
+  await blocked.waitForFunction(() => window.audioPlayAttempts.length === 2 && document.querySelector('#experience').dataset.sound === 'playing');
+  check(await blocked.evaluate(() => window.audioPlayAttempts.every((attempt) => attempt.loop) && window.audioPlayAttempts.at(-1).volume === 0.25), 'Lần chạm đầu phát nhạc ở âm lượng đã đặt và tự lặp');
+  await blockedContext.close();
 
   const normalContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const normal = await normalContext.newPage(); normal.on('pageerror', (error) => errors.push(error.message));

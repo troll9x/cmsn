@@ -276,3 +276,5 @@ await loadFonts();
 journey.busy = false; render();
 try { world = new World($('#world'), journey, motion.matches, showFallback); } catch { showFallback(); }
 requestAnimationFrame(() => { $('#loading').classList.add('loaded'); schedule(() => { $('#loading').hidden = true; }, motion.matches ? 0 : 600); });
+// Try immediately where browser policy allows it; a rejected audible autoplay is retried on the first tap.
+void sound.start().then(updateSound);
