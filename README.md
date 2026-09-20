@@ -28,6 +28,8 @@ Thư mục **`dist/`** chứa website hoàn chỉnh. Đưa toàn bộ nội dung
 
 `vite.config.js` dùng `base: './'`, hỗ trợ phục vụ trong thư mục con. Không mở `index.html` bằng `file://`; hãy dùng máy chủ HTTP/HTTPS. HTTPS được khuyến nghị khi sử dụng trên iPhone.
 
+Khi `dist/` được chọn làm running directory trong aaPanel, bảng điều khiển có thể tạo file bảo vệ `.user.ini` tại đó. Cấu hình build giữ lại file này để các lần `npm run build` sau không lỗi khi Vite chuẩn bị thư mục đầu ra.
+
 ## Cá nhân hóa
 
 **Điền thông tin cá nhân trong `personal.config.js` ở thư mục gốc**, cùng cấp với `package.json`. Website tự lấy tên, ngày sinh nhật, cách xưng hô và chữ ký từ file này.
