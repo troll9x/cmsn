@@ -63,7 +63,7 @@ try {
   check(await page.locator('#handoff').isHidden(), 'Có khoảng dừng trước khi hiện lời hẹn');
   check(await page.locator('#gift-celebration').textContent() === 'CHÚC MỪNG SINH NHẬT' && await page.locator('#gift-celebration').isVisible(), 'Trái tim đã tụ: hiện đúng chữ CHÚC MỪNG SINH NHẬT');
   await page.waitForFunction(() => !document.querySelector('#handoff').hidden, null, { timeout: 12000 });
-  check((await page.locator('#handoff').textContent()).includes('tối nay'), 'Hiển thị lời hẹn cho buổi tối');
+  check((await page.locator('#handoff').textContent()) === text(CONTENT.scenes[5].handoff), 'Hiển thị lời hẹn tự nhiên cho buổi tối');
   check(!(await page.locator('#experience').textContent()).toLocaleLowerCase('vi').includes('món quà'), 'Nội dung hiển thị không nhắc đến món quà');
   await page.screenshot({ path: 'test-results/gift-desktop.png', fullPage: true });
   await page.mouse.click(700, 160); await settle(page, 'closing');
@@ -132,9 +132,9 @@ try {
   await phone.waitForFunction(() => document.querySelector('#experience').getAttribute('aria-busy') === 'false');
   check((await phone.locator('#copy').textContent()).includes('lý do để mỉm cười'), 'Mobile giữ lại lời chúc đầu tiên sau hiệu ứng');
   await tap();
-  check((await phone.locator('#copy').textContent()).includes('tối nay'), 'Mobile đọc lời mời đi date theo đúng thứ tự');
+  check((await phone.locator('#copy').textContent()).includes('riêng buổi tối nay'), 'Mobile đọc lời mong chờ buổi date theo đúng thứ tự');
   await tap();
-  check((await phone.locator('#copy').textContent()).includes('hẹn em nhé'), 'Mobile hiện câu hẹn cuối trước khi chuyển cảnh');
+  check((await phone.locator('#copy').textContent()) === text(CONTENT.scenes[5].handoff).replace(/\s+/g, ' ').trim(), 'Mobile hiện lời hẹn mượt mà trước khi chuyển cảnh');
   await phone.screenshot({ path: 'test-results/gift-hearts-mobile.png', fullPage: true });
   await tapTo('closing');
   check(await phone.locator('#birthday-date').evaluate((date) => parseFloat(getComputedStyle(date).fontSize) >= 20), 'Ngày sinh nhật trên mobile đủ lớn để đọc rõ');

@@ -7,7 +7,7 @@ import { PROFILE } from '../personal.config.js';
 export const CONTENT = {
   ...PROFILE,
   brand: 'Sinh nhật của {recipientName}',
-  edition: 'DÀNH RIÊNG CHO {recipientName}',
+  edition: 'DÀNH RIÊNG CHO CHI',
   documentTitle: 'Chúc mừng sinh nhật, {recipientName} · {senderName}',
   openingTitle: 'Chúc mừng sinh nhật,\n{recipientName}!',
   openingLines: ['Chúc mừng', 'sinh nhật,', '{recipientName}!'],
@@ -23,7 +23,7 @@ export const CONTENT = {
   garden: { roseColor: '#D9799F', ivoryColor: '#EEDCC8', roseCenter: '#9E476D', ivoryCenter: '#BA9875', leafColor: '#58674F', stemColor: '#6F785C' },
   audio: { enabled: false, src: 'audio/background.mp3', volume: 0.25 },
   ui: {
-    dedication: PROFILE.birthday ? 'SINH NHẬT CỦA {recipientName}' : 'DÀNH RIÊNG CHO SINH NHẬT {recipientName}',
+    dedication: PROFILE.birthday ? 'SINH NHẬT CỦA CHI' : 'DÀNH RIÊNG CHO SINH NHẬT CHI',
     start: 'Bắt đầu hành trình', next: 'Đi tiếp', back: 'Quay lại',
     save: 'Lưu giữ khoảnh khắc này', replay: 'Xem lại hành trình',
     openGift: 'Chạm để mở lời hẹn', giftOpening: 'Một lời hẹn đang hiện ra…',
@@ -73,7 +73,7 @@ export const CONTENT = {
     {
       id: 'garden', label: 'Những điều tốt đẹp', title: 'Một khu vườn,\nnhững lời chúc.',
       mobileTitle: 'Những điều\ntốt đẹp.',
-      paragraphs: ['Trong ngày sinh nhật của {recipient},\n{sender} gửi ba điều ước vào khu vườn này.', 'Chạm vào từng bông hoa,\nđể mở một lời chúc dành cho tuổi mới của {recipientName}.'],
+      paragraphs: ['Trong ngày sinh nhật của {recipient},\n{sender} gửi những lời chúc vào khu vườn này.', 'Chạm vào từng bông hoa,\nđể mở một lời chúc dành cho tuổi mới của {recipientName}.'],
       interactions: ['Chúc {recipient} bước sang tuổi mới với thật nhiều sức khỏe, bình an và những giấc ngủ ngon.', 'Chúc {recipient} có thêm những ngày vui, những chuyến đi đáng nhớ và thời gian cho những điều mình thích.', 'Chúc những điều {recipient} đang cố gắng sẽ có kết quả tốt, và {recipient} luôn có người chân thành ở bên.'],
       caption: 'Dành cho tuổi mới,', captionItalic: 'những điều thật xứng đáng.',
     },
@@ -84,13 +84,13 @@ export const CONTENT = {
       caption: 'Mỗi phút giây của tuổi mới,', captionItalic: 'mong đều có điều để {recipient} thấy vui.',
     },
     {
-      id: 'gift', label: 'Lời hẹn tối nay', title: 'Một lời hẹn,\ndành riêng cho {recipient}.',
-      mobileTitle: 'Một lời hẹn,\ndành riêng cho {recipient}.',
-      paragraphs: ['Vẫn còn một điều\n{sender} muốn dành riêng cho {recipientName}.\nChạm nhẹ để mở nhé.'],
-      revealedParagraphs: ['Chúc {recipient} một tuổi mới thật vui, khỏe mạnh\nvà luôn có thật nhiều lý do để mỉm cười.', 'Và tối nay, {sender} muốn được gặp {recipient},\ncùng {recipient} đi qua một buổi hẹn thật vui.\nMột khoảng thời gian chỉ dành cho hai chúng ta.'],
+      id: 'gift', label: 'Hẹn em tối nay', title: 'Một lời hẹn,\ndành cho tối nay.',
+      mobileTitle: 'Một lời hẹn,\ndành cho tối nay.',
+      paragraphs: ['Ở cuối hành trình này,\n{sender} vẫn còn đôi lời muốn dành riêng cho {recipient}.\nChạm nhẹ để đọc nhé.'],
+      revealedParagraphs: ['Chúc {recipient} một tuổi mới thật vui, khỏe mạnh\nvà luôn có thật nhiều lý do để mỉm cười.', 'Giữa những lời chúc cho tuổi mới,\n{sender} muốn giữ lại một điều cho riêng buổi tối nay —\nkhoảng thời gian {sender} được ở bên {recipient}.'],
       celebration: 'CHÚC MỪNG SINH NHẬT',
-      handoff: 'Vậy tối nay…\nhẹn {recipient} nhé?',
-      caption: 'Hẹn {recipient} tối nay,', captionItalic: 'cho một buổi tối thật đáng nhớ.',
+      handoff: 'Hẹn gặp {recipient} tối nay, {recipientName}.\n{senderCapital} mong đó sẽ là một buổi tối thật đẹp.',
+      caption: 'Hẹn gặp {recipient} tối nay,', captionItalic: 'cho một buổi tối thật đẹp.',
     },
     {
       id: 'closing', label: 'Dành cho {recipient}', title: 'Chúc mừng sinh nhật, {recipientName}!',
