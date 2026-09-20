@@ -57,7 +57,7 @@ Các token được thay tự động trong nội dung:
 | `{sender}` / `{recipient}` | Đại từ xưng hô |
 | `{senderCapital}` / `{recipientCapital}` | Đại từ có chữ đầu viết hoa |
 
-Đổi `openingTitle` để thay tiêu đề mở đầu. `openingLines` là cách xuống dòng nghệ thuật cho tiêu đề mặc định; khi thay `openingTitle`, tiêu đề mới tự hiển thị. Đổi `scenes[n].title`, `mobileTitle`, `paragraphs`, `interactions`, `caption` và `captionItalic` để sửa từng cảnh. `mobileTitle` là tiêu đề ngắn dành cho màn hình điện thoại; các đoạn nội dung tự chia thành lượt đọc, giữ nguyên mọi từ. Cảnh món quà có thêm `revealedParagraphs` và `handoff`.
+Đổi `openingTitle` để thay tiêu đề mở đầu. Đổi `scenes[n].mobileTitle`, `paragraphs`, `interactions`, `caption` và `captionItalic` để sửa từng cảnh. `mobileTitle` là tiêu đề chính dùng chung trên desktop và điện thoại, bao gồm cách xuống dòng nghệ thuật; các đoạn nội dung trên điện thoại tự chia thành lượt đọc nhưng vẫn giữ nguyên mọi từ. Cảnh món quà có thêm `revealedParagraphs` và `handoff`.
 
 Đổi **`CONTENT.finalMessage`** để thay toàn bộ lời nhắn cuối; dùng `\n` để xuống dòng, `\n\n` để ngăn đoạn. `finalTitle` là tiêu đề HTML cuối; chữ ký lấy từ `PROFILE.signature` trong `personal.config.js`. Tên trong chữ bằng hạt sáng tự lấy từ `recipientName`. Nội dung được escape trước khi đưa vào HTML, nên tên chứa dấu nháy hoặc ký tự đặc biệt vẫn an toàn.
 

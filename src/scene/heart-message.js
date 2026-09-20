@@ -16,10 +16,10 @@ export function heartMessage(message) {
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const shade = ctx.createRadialGradient(600, 420, 50, 600, 420, 535);
-    shade.addColorStop(0, '#10091450'); shade.addColorStop(0.65, '#10091422'); shade.addColorStop(1, '#10091400');
+    const shade = ctx.createRadialGradient(600, 420, 35, 600, 420, 500);
+    shade.addColorStop(0, '#100914b8'); shade.addColorStop(0.48, '#10091478'); shade.addColorStop(0.78, '#10091428'); shade.addColorStop(1, '#10091400');
     ctx.fillStyle = shade; ctx.fillRect(0, 0, 1200, 900);
-    ctx.shadowColor = '#10091499'; ctx.shadowBlur = 10;
+    ctx.shadowColor = '#100914ee'; ctx.shadowBlur = 22;
     const fit = (value, size, family, y, color, maxWidth = 1000, style = '') => {
       ctx.font = `${style}${size}px ${family}`;
       const width = ctx.measureText(value).width;
@@ -28,11 +28,11 @@ export function heartMessage(message) {
     };
     const value = text(message).trim();
     if (/^chúc\s+mừng\s+sinh\s+nhật$/iu.test(value)) {
-      fit('Chúc mừng', mobile ? 116 : 87, DISPLAY_FONT, 238, CONTENT.colors.pearl);
-      fit('sinh nhật', mobile ? 248 : 196, DISPLAY_FONT, 400, CONTENT.colors.pearl, 1000, 'italic ');
+      fit('Chúc mừng', mobile ? 132 : 112, DISPLAY_FONT, 205, CONTENT.colors.pearl);
+      fit('sinh nhật', mobile ? 260 : 225, DISPLAY_FONT, 370, CONTENT.colors.pearl, 1030, 'italic ');
     } else if (/^happy\s+birthday[!.]?$/iu.test(value)) {
-      fit('Happy', mobile ? 124 : 95, DISPLAY_FONT, 238, CONTENT.colors.pearl);
-      fit('Birthday', mobile ? 248 : 196, DISPLAY_FONT, 400, CONTENT.colors.pearl, 1000, 'italic ');
+      fit('Happy', mobile ? 136 : 116, DISPLAY_FONT, 205, CONTENT.colors.pearl);
+      fit('Birthday', mobile ? 260 : 225, DISPLAY_FONT, 370, CONTENT.colors.pearl, 1030, 'italic ');
     } else {
       const words = value.split(/\s+/), lines = []; let line = '';
       ctx.font = `110px ${DISPLAY_FONT}`;
@@ -45,12 +45,14 @@ export function heartMessage(message) {
       const height = Math.min(130, 340 / Math.max(1, lines.length));
       lines.forEach((line, index) => fit(line, height * 0.85, DISPLAY_FONT, 330 + (index - (lines.length - 1) / 2) * height, CONTENT.colors.pearl));
     }
-    ctx.shadowBlur = 0; ctx.strokeStyle = `${CONTENT.colors.gold}77`; ctx.lineWidth = 1.2;
-    ctx.beginPath(); ctx.moveTo(520, 540); ctx.lineTo(680, 540); ctx.stroke();
-    fit(text(CONTENT.recipientName), mobile ? 145 : 101, DISPLAY_FONT, 633, CONTENT.colors.blush, 840, 'italic ');
+    ctx.shadowColor = '#f4a7c388'; ctx.shadowBlur = 26;
+    fit(text(CONTENT.recipientName), mobile ? 184 : 164, DISPLAY_FONT, 570, CONTENT.colors.blush, 880, '600 ');
     if (CONTENT.birthday) {
-      ctx.font = `${mobile ? 52 : 32}px ${BODY_FONT}`; ctx.fillStyle = CONTENT.colors.gold;
-      ctx.fillText(text(CONTENT.birthday).split('').join('\u2009'), 600, 740);
+      const birthday = text(CONTENT.birthday).replace(/\s*[/.-]\s*/g, ' · ');
+      ctx.shadowColor = '#e8c98d66'; ctx.shadowBlur = 16;
+      ctx.strokeStyle = `${CONTENT.colors.gold}aa`; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(390, 700); ctx.lineTo(492, 700); ctx.moveTo(708, 700); ctx.lineTo(810, 700); ctx.stroke();
+      fit(birthday, mobile ? 80 : 72, BODY_FONT, 700, CONTENT.colors.gold, 430, '500 ');
     }
     texture.needsUpdate = true;
   }

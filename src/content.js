@@ -23,7 +23,7 @@ export const CONTENT = {
   garden: { roseColor: '#D9799F', ivoryColor: '#EEDCC8', roseCenter: '#9E476D', ivoryCenter: '#BA9875', leafColor: '#58674F', stemColor: '#6F785C' },
   audio: { enabled: false, src: 'audio/background.mp3', volume: 0.25 },
   ui: {
-    dedication: PROFILE.birthday ? 'SINH NHẬT {recipientName} · {birthday}' : 'DÀNH RIÊNG CHO SINH NHẬT {recipientName}',
+    dedication: PROFILE.birthday ? 'SINH NHẬT CỦA {recipientName}' : 'DÀNH RIÊNG CHO SINH NHẬT {recipientName}',
     start: 'Bắt đầu hành trình', next: 'Đi tiếp', back: 'Quay lại',
     save: 'Lưu giữ khoảnh khắc này', replay: 'Xem lại hành trình',
     openGift: 'Chạm để mở món quà', giftOpening: 'Một chút bất ngờ đang mở ra…',

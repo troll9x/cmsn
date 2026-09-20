@@ -43,6 +43,9 @@ document.querySelector('#app').innerHTML = `
       <div class="visual-messages" id="visual-messages" hidden></div>
       <article class="story" id="story" aria-labelledby="scene-title">
         <div class="dedication" id="dedication"></div>
+        <div class="birthday-mark" id="birthday-mark" aria-label="">
+          <span aria-hidden="true"></span><time id="birthday-date"></time><span aria-hidden="true"></span>
+        </div>
         <h1 id="scene-title" tabindex="-1"></h1>
         <div class="story-copy" id="copy"></div>
         <div class="reading-progress" id="reading-progress" aria-label="${escape(CONTENT.ui.readingProgress)}"></div>
@@ -83,14 +86,24 @@ function render({ focus = false } = {}) {
   $('#experience').dataset.scene = scene.id;
   document.body.dataset.scene = scene.id;
   $('#dedication').textContent = text(CONTENT.ui.dedication); $('#dedication').hidden = !intro;
-  if (mobile) {
-    const title = intro && CONTENT.openingTitle !== CONTENT.scenes[0].title ? CONTENT.openingTitle : scene.mobileTitle;
+  const showBirthday = Boolean(CONTENT.birthday) && (intro || closing);
+  const birthday = String(CONTENT.birthday).replace(/\s*[/.\-]\s*/g, ' · ');
+  $('#birthday-date').textContent = birthday;
+  $('#birthday-mark').hidden = !showBirthday;
+  $('#birthday-mark').setAttribute('aria-label', showBirthday ? `Ngày sinh nhật ${CONTENT.birthday}` : '');
+  if (closing) {
+    const finalTitle = text(CONTENT.finalTitle); const finalName = text(CONTENT.recipientName);
+    const nameAt = finalTitle.toLocaleLowerCase('vi').lastIndexOf(finalName.toLocaleLowerCase('vi'));
+    $('#scene-title').innerHTML = nameAt > 0
+      ? `<span class="closing-wish">${escape(finalTitle.slice(0, nameAt).trim())}</span><span class="closing-name">${escape(finalTitle.slice(nameAt).trim())}</span>`
+      : `<span class="closing-wish">${escape(finalTitle)}</span>`;
+  } else {
+    // Keep the wording and artistic line breaks identical on desktop and mobile.
+    const title = intro && CONTENT.openingTitle !== CONTENT.scenes[0].title
+      ? CONTENT.openingTitle
+      : scene.mobileTitle || scene.title;
     $('#scene-title').innerHTML = escape(title).split('\n').map((line, i) => `<span${i === 1 ? ' class="italic"' : ''}>${line}</span>`).join('');
-  } else if (intro) {
-    const lines = CONTENT.openingTitle === CONTENT.scenes[0].title ? CONTENT.openingLines : [CONTENT.openingTitle];
-    $('#scene-title').innerHTML = lines.map((line, i) => `<span${i === lines.length - 1 ? ' class="italic"' : ''}>${escape(line)}</span>`).join('');
-  } else if (closing) { $('#scene-title').innerHTML = `<span class="italic">${escape(CONTENT.finalTitle)}</span>`; }
-  else { $('#scene-title').innerHTML = escape(scene.title).split('\n').map((line, i) => `<span${i === 1 ? ' class="italic"' : ''}>${line}</span>`).join(''); }
+  }
   let copy = closing ? CONTENT.finalMessage.split('\n\n') : gift && journey.gift !== 'closed' && journey.gift !== 'opening' ? scene.revealedParagraphs : scene.paragraphs;
   const revealedIndex = reader.reveals.get(journey.index);
   if (mobile && revealedIndex !== undefined) copy = [scene.interactions[revealedIndex]];

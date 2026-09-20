@@ -25,6 +25,7 @@ try {
   await page.goto('http://127.0.0.1:5178');
   await page.locator('#loading').waitFor({ state: 'hidden' });
   check(await page.locator('#world').isVisible(), 'WebGL khởi tạo');
+  check((await page.locator('#scene-title').innerText()).replace(/\s+/g, ' ').trim() === text(CONTENT.scenes[0].mobileTitle).replace(/\s+/g, ' ').trim(), 'Desktop dùng cùng tiêu đề với mobile');
   check(await page.evaluate(() => {
     const faces = [...document.fonts].filter(face => face.family.replaceAll('"', '') === 'Lora' || face.family.replaceAll('"', '') === 'Be Vietnam Pro');
     return faces.length === 4 && faces.every(face => face.status === 'loaded');
@@ -66,6 +67,8 @@ try {
   await page.screenshot({ path: 'test-results/gift-desktop.png', fullPage: true });
   await page.mouse.click(700, 160); await settle(page, 'closing');
   check((await page.locator('#copy p').count()) === 4, 'Lời chúc cuối đủ bốn đoạn');
+  check(await page.locator('#birthday-date').textContent() === CONTENT.birthday.replace('/', ' · '), 'Ngày sinh nhật nổi bật ở cảnh kết');
+  check(await page.locator('.closing-name').evaluate((name) => parseFloat(getComputedStyle(name).fontSize) > parseFloat(getComputedStyle(document.querySelector('.closing-wish')).fontSize)), 'Tên người nhận là điểm nhấn lớn nhất của lời chúc cuối');
   await page.mouse.click(700, 160);
   await page.keyboard.press('ArrowLeft');
   check(await page.locator('#experience').getAttribute('data-scene') === 'closing', 'Không rời cảnh khi đoạn kết trái tim đang chạy');
@@ -128,6 +131,7 @@ try {
   await phone.waitForFunction(() => document.querySelector('#experience').getAttribute('aria-busy') === 'false' && document.querySelector('#copy').textContent.includes('bên cạnh'));
   await phone.screenshot({ path: 'test-results/gift-hearts-mobile.png', fullPage: true });
   await tapTo('closing');
+  check(await phone.locator('#birthday-date').evaluate((date) => parseFloat(getComputedStyle(date).fontSize) >= 20), 'Ngày sinh nhật trên mobile đủ lớn để đọc rõ');
   const finalPages = [];
   for (let attempt = 0; attempt < 15; attempt++) {
     finalPages.push(await phone.locator('#copy').textContent());
