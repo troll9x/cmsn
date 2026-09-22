@@ -64,11 +64,11 @@ export const CONTENT = {
       caption: 'Giữa rất nhiều ngã rẽ,', captionItalic: 'thật vui vì đã gặp được nhau.',
     },
     {
-      id: 'distance', label: 'Những niềm vui nhỏ', title: 'Những điều nhỏ,\nlàm ngày vui hơn.',
-      mobileTitle: 'Một chút vui,\ndành cho {recipient}.',
-      paragraphs: ['Từ khi gặp {recipient}, {sender} nhận ra\nniềm vui đôi khi rất đơn giản:\nmột cuộc trò chuyện, một tin nhắn\nhay một người bỗng được nhớ đến.', 'Trong ngày sinh nhật của {recipient},\n{sender} mong những niềm vui nhỏ như thế\nsẽ đến thật nhiều, hôm nay và suốt tuổi mới.'],
+      id: 'distance', label: 'Có em', title: 'Có {recipient},\nngày vui hơn.',
+      mobileTitle: 'Có {recipient},\nngày vui hơn.',
+      paragraphs: ['{senderCapital} không nhớ từ khi nào,\nnhưng những cuộc trò chuyện với {recipient}\nđã trở thành một phần vui trong ngày.', 'Chỉ một tin nhắn, một câu chuyện,\nhay đôi lúc chợt nghĩ đến {recipient} —\ncũng đủ khiến {sender} mỉm cười.'],
       interactions: ['Một cuộc trò chuyện khiến ngày hôm đó vui hơn.', 'Một tin nhắn khiến ai đó vô thức mỉm cười.', 'Một người đôi khi được nhớ đến mà chẳng cần lý do.'],
-      caption: 'Những niềm vui nhỏ hôm nay,', captionItalic: 'đi cùng {recipient} đến tuổi mới.',
+      caption: 'Vì đôi khi chỉ cần nghĩ đến {recipient},', captionItalic: '{sender} đã thấy ngày hôm đó vui hơn.',
     },
     {
       id: 'garden', label: 'Những điều tốt đẹp', title: 'Một khu vườn,\nnhững lời chúc.',
