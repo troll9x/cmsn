@@ -67,7 +67,7 @@ export const CONTENT = {
       id: 'distance', label: 'Có em', title: 'Có {recipient},\nngày vui hơn.',
       mobileTitle: 'Có {recipient},\nngày vui hơn.',
       paragraphs: ['{senderCapital} không nhớ từ khi nào,\nnhưng những cuộc trò chuyện với {recipient}\nđã trở thành một phần vui trong ngày.', 'Chỉ một tin nhắn, một câu chuyện,\nhay đôi lúc chợt nghĩ đến {recipient} —\ncũng đủ khiến {sender} mỉm cười.'],
-      interactions: ['Một cuộc trò chuyện khiến ngày hôm đó vui hơn.', 'Một tin nhắn khiến ai đó vô thức mỉm cười.', 'Một người đôi khi được nhớ đến mà chẳng cần lý do.'],
+      interactions: ['Nói chuyện với {recipient} một lúc thôi, ngày hôm đó của {sender} cũng vui hơn rồi.', 'Có những lúc nhìn thấy tin nhắn của {recipient}, {sender} đã ngồi cười một mình.', 'Và có những lúc chẳng vì lý do gì, {sender} chỉ chợt nhớ đến {recipient} thôi.'],
       caption: 'Vì đôi khi chỉ cần nghĩ đến {recipient},', captionItalic: '{sender} đã thấy ngày hôm đó vui hơn.',
     },
     {

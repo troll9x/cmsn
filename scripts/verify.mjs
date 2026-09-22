@@ -43,7 +43,7 @@ try {
   await page.keyboard.press('ArrowRight'); await settle(page, 'distance', false);
   for (let i = 0; i < 3; i++) {
     await page.mouse.click(700, 160);
-    check(await page.locator('.is-discovered p').last().textContent() === CONTENT.scenes[2].interactions[i], `Chạm màn hình ${i + 1}: hiện đúng câu theo thứ tự`);
+    check(await page.locator('.is-discovered p').last().textContent() === text(CONTENT.scenes[2].interactions[i]), `Chạm màn hình ${i + 1}: hiện đúng câu theo thứ tự`);
     check(await page.locator('.is-discovered p').count() === i + 1, 'Giữ lại các câu đã mở');
     if (i < 2) check(await page.locator('#experience').getAttribute('data-scene') === 'distance', `Trái tim ${i + 1}: giữ cảnh để mở đủ ba câu`);
   }
@@ -116,7 +116,7 @@ try {
   await phone.waitForTimeout(450);
   check(await phone.locator('.is-discovered').count() === 2, 'Vuốt lên mở trái tim thứ hai');
   await phone.touchscreen.tap(90, 160); await phone.waitForTimeout(180);
-  check((await phone.locator('.is-discovered p').allTextContents()).join('|') === CONTENT.scenes[2].interactions.join('|'), 'Ba lần chạm/vuốt hiện đủ ba câu trên điện thoại');
+  check((await phone.locator('.is-discovered p').allTextContents()).join('|') === CONTENT.scenes[2].interactions.map(text).join('|'), 'Ba lần chạm/vuốt hiện đủ ba câu trên điện thoại');
   await noOverflow(phone, 'Ba câu cạnh trái tim trên điện thoại');
   await phone.screenshot({ path: 'test-results/distance-mobile.png', fullPage: true });
   await tapTo('garden');
